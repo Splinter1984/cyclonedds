@@ -428,11 +428,11 @@ struct whc_writer_info *dds_whc_make_wrinfo (struct dds_writer *wr, const dds_qo
   wrinfo->writer = wr;
   wrinfo->is_transient_local = (qos->durability.kind == DDS_DURABILITY_TRANSIENT_LOCAL);
   wrinfo->has_deadline = (qos->deadline.deadline != DDS_INFINITY);
-  wrinfo->hdepth = (qos->history.kind == DDS_HISTORY_KEEP_ALL) ? 0 : (unsigned) qos->history.depth;
+  wrinfo->hdepth = (qos->history.kind == DDS_HISTORY_KEEP_ALL) ? 0U : (unsigned) qos->history.depth;
   if (!wrinfo->is_transient_local)
     wrinfo->tldepth = 0;
   else
-    wrinfo->tldepth = (qos->durability_service.history.kind == DDS_HISTORY_KEEP_ALL) ? 0 : (unsigned) qos->durability_service.history.depth;
+    wrinfo->tldepth = (qos->durability_service.history.kind == DDS_HISTORY_KEEP_ALL) ? 0U : (unsigned) qos->durability_service.history.depth;
   wrinfo->idxdepth = wrinfo->hdepth > wrinfo->tldepth ? wrinfo->hdepth : wrinfo->tldepth;
   return wrinfo;
 }
@@ -695,7 +695,7 @@ static int whcn_in_tlidx (const struct whc_impl *whc, const struct whc_idxnode *
     return 0;
   else
   {
-    uint32_t d = (idxn->headidx + (pos > idxn->headidx ? whc->wrinfo.idxdepth : 0)) - pos;
+    uint32_t d = (idxn->headidx + (pos > idxn->headidx ? whc->wrinfo.idxdepth : 0U)) - pos;
     assert (d < whc->wrinfo.idxdepth);
     return d < whc->wrinfo.tldepth;
   }

@@ -47,7 +47,7 @@
 #define UDATA_MAGIC "DDSPerf:"
 #define UDATA_MAGIC_SIZE (sizeof (UDATA_MAGIC) - 1)
 
-#define PINGPONG_RAWSIZE 20000
+#define PINGPONG_RAWSIZE 20000U
 
 enum topicsel {
   KS,    /* KeyedSeq type: seq#, key, sequence-of-octet */
@@ -311,7 +311,7 @@ struct guidstr {
 #define MM_WR_DATA   8u
 #define MM_WR_PING  16u
 #define MM_WR_PONG  32u
-#define MM_ALL (2 * MM_WR_PONG - 1)
+#define MM_ALL (2u * MM_WR_PONG - 1u)
 
 struct ppant {
   ddsrt_avl_node_t avlnode;     /* embedded AVL node for handle index */
@@ -909,7 +909,7 @@ static int check_eseq (struct eseq_admin *ea, uint32_t seq, uint32_t keyval, uin
   eseq = ea->eseq[ea->nph];
   DDSRT_WARNING_MSVC_OFF(6386)
   for (unsigned i = 0; i < ea->nkeys; i++)
-    eseq[i] = seq + (i - keyval) + (i <= keyval ? ea->nkeys : 0);
+    eseq[i] = seq + (i - keyval) + (i <= keyval ? ea->nkeys : 0U);
   DDSRT_WARNING_MSVC_ON(6386)
   ea->stats = realloc (ea->stats, (ea->nph + 1) * sizeof (*ea->stats));
   assert(ea->stats);
@@ -1395,7 +1395,7 @@ static void async_participant_data_listener (dds_entity_t rd, void *arg)
             pp->tdisc = dds_time ();
             pp->tdeadline = pp->tdisc + DDS_SECS (5);
             if (pp->handle != dp_handle || ignorelocal == DDS_IGNORELOCAL_NONE)
-              pp->unmatched = MM_ALL & ~(has_reader ? 0 : MM_RD_DATA) & ~(rd_data ? 0 : MM_WR_DATA);
+              pp->unmatched = MM_ALL & ~(has_reader ? 0U : MM_RD_DATA) & ~(rd_data ? 0U : MM_WR_DATA);
             else
               pp->unmatched = 0;
             ddsrt_fibheap_insert (&ppants_to_match_fhd, &ppants_to_match, pp);
@@ -2208,7 +2208,7 @@ int main (int argc, char *argv[])
         } else if (sscanf (optarg, "maxwait:%lf%n", &maxwait, &pos) == 1 && optarg[pos] == 0) {
           maxwait = (maxwait <= 0) ? HUGE_VAL : maxwait;
         } else if (sscanf (optarg, "initwait:%lf%n", &initmaxwait, &pos) == 1 && optarg[pos] == 0) {
-          initmaxwait = (initmaxwait <= 0) ? 0 : initmaxwait;
+          initmaxwait = (initmaxwait <= 0) ? 0.0 : initmaxwait;
         } else if (sscanf (optarg, "minmatch:%lu%n", &n, &pos) == 1 && optarg[pos] == 0) {
           minmatch = (uint32_t) n;
         } else {

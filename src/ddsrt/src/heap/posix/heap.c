@@ -16,7 +16,7 @@
 void *
 ddsrt_malloc_s(size_t size)
 {
-  return malloc(size ? size : 1); /* Allocate memory even if size == 0 */
+  return malloc(size ? size : 1UL); /* Allocate memory even if size == 0 */
 }
 
 void *
@@ -78,7 +78,7 @@ ddsrt_realloc_s(void *memblk, size_t size)
      not all platforms will return newmem == NULL. We consistently do, so the
      result of a non-failing ddsrt_realloc_s always needs to be free'd, like
      ddsrt_malloc_s(0). */
-  return realloc(memblk, size ? size : 1);
+  return realloc(memblk, size ? size : 1UL);
 }
 
 void

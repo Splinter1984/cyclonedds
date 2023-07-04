@@ -1103,7 +1103,7 @@ static void drop_instance_noupdate_no_writers (struct dds_rhc_default *__restric
 
 static void dds_rhc_register (struct dds_rhc_default *rhc, struct rhc_instance *inst, uint64_t wr_iid, bool autodispose, bool sample_accepted, bool * __restrict nda)
 {
-  const uint64_t inst_wr_iid = inst->wr_iid_islive ? inst->wr_iid : 0;
+  const uint64_t inst_wr_iid = inst->wr_iid_islive ? inst->wr_iid : 0UL;
 
   TRACE (" register:");
 
@@ -2219,7 +2219,7 @@ static int32_t read_w_qminv (struct dds_rhc_default * __restrict rhc, bool lock,
     rhc->n_not_alive_no_writers, rhc->n_new, rhc->n_vsamples, rhc->n_invsamples,
     rhc->n_vread, rhc->n_invread);
 
-  const dds_querycond_mask_t qcmask = (cond && cond->m_query.m_filter) ? cond->m_query.m_qcmask : 0;
+  const dds_querycond_mask_t qcmask = (cond && cond->m_query.m_filter) ? cond->m_query.m_qcmask : 0U;
   if (handle)
   {
     struct rhc_instance template, *inst;
@@ -2264,7 +2264,7 @@ static int32_t take_w_qminv (struct dds_rhc_default * __restrict rhc, bool lock,
     rhc->n_not_alive_no_writers, rhc->n_new, rhc->n_vsamples,
     rhc->n_invsamples, rhc->n_vread, rhc->n_invread);
 
-  const dds_querycond_mask_t qcmask = (cond && cond->m_query.m_filter) ? cond->m_query.m_qcmask : 0;
+  const dds_querycond_mask_t qcmask = (cond && cond->m_query.m_filter) ? cond->m_query.m_qcmask : 0U;
   if (handle)
   {
     struct rhc_instance template, *inst;
@@ -2440,13 +2440,13 @@ static bool dds_rhc_default_add_readcondition (struct dds_rhc *rhc_common, dds_r
       const bool instmatch = eval_predicate_invsample (rhc, inst, cond->m_query.m_filter);;
       uint32_t matches = 0;
 
-      inst->conds = (inst->conds & ~qcmask) | (instmatch ? qcmask : 0);
+      inst->conds = (inst->conds & ~qcmask) | (instmatch ? qcmask : 0U);
       if (inst->latest)
       {
         struct rhc_sample *sample = inst->latest->next, * const end = sample;
         do {
           const bool m = eval_predicate_sample (rhc, sample->sample, cond->m_query.m_filter);
-          sample->conds = (sample->conds & ~qcmask) | (m ? qcmask : 0);
+          sample->conds = (sample->conds & ~qcmask) | (m ? qcmask : 0U);
           matches += m;
           sample = sample->next;
         } while (sample != end);
@@ -2736,7 +2736,7 @@ static int32_t dds_rhc_default_takecdr (struct dds_rhc *rhc_common, bool lock, s
  *************************/
 
 #ifndef NDEBUG
-#define CHECK_MAX_CONDS 64
+#define CHECK_MAX_CONDS 64U
 static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_conds, bool check_qcmask)
 {
   if (!rhc->xchecks)
