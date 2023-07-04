@@ -88,7 +88,7 @@ dds_return_t dds_set_guardcondition (dds_entity_t guardcond, bool triggered)
     do {
       oldst = ddsrt_atomic_ld32 (&e->m_status.m_trigger);
     } while (!ddsrt_atomic_cas32 (&e->m_status.m_trigger, oldst, triggered));
-    if (oldst == 0 && triggered != 0)
+    if (oldst == 0U && triggered != 0U)
       dds_entity_observers_signal (e, triggered);
     ddsrt_mutex_unlock (&e->m_observers_lock);
     dds_guardcond_unlock (gcond);
@@ -109,7 +109,7 @@ dds_return_t dds_read_guardcondition (dds_entity_t guardcond, bool *triggered)
     return rc;
   else
   {
-    *triggered = (ddsrt_atomic_ld32 (&gcond->m_entity.m_status.m_trigger) != 0);
+    *triggered = (ddsrt_atomic_ld32 (&gcond->m_entity.m_status.m_trigger) != 0U);
     dds_guardcond_unlock (gcond);
     return DDS_RETCODE_OK;
   }
@@ -128,7 +128,7 @@ dds_return_t dds_take_guardcondition (dds_entity_t guardcond, bool *triggered)
     return rc;
   else
   {
-    *triggered = (ddsrt_atomic_and32_ov (&gcond->m_entity.m_status.m_trigger, 0) != 0);
+    *triggered = (ddsrt_atomic_and32_ov (&gcond->m_entity.m_status.m_trigger, 0) != 0U);
     dds_guardcond_unlock (gcond);
     return DDS_RETCODE_OK;
   }

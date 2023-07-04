@@ -115,7 +115,7 @@ static void topic_guid_map_unref (struct ddsi_domaingv * const gv, const struct 
   if (m == NULL)
     return;
 
-  if (m->refc == 0)
+  if (m->refc == 0U)
   {
     ddsrt_hh_remove_present (ktp->topic_guid_map, m);
     ddsi_thread_state_awake (ddsi_lookup_thread_state (), gv);
@@ -140,7 +140,7 @@ static void dds_topic_status_cb (struct dds_topic *tp)
   struct dds_listener const * const lst = &tp->m_entity.m_listener;
 
   ddsrt_mutex_lock (&tp->m_entity.m_observers_lock);
-  while (tp->m_entity.m_cb_count > 0)
+  while (tp->m_entity.m_cb_count > 0U)
     ddsrt_cond_wait (&tp->m_entity.m_observers_cond, &tp->m_entity.m_observers_lock);
   tp->m_entity.m_cb_count++;
 
@@ -200,15 +200,15 @@ void dds_topic_allow_set_qos (struct dds_topic *tp)
   struct dds_ktopic * const ktp = tp->m_ktopic;
   struct dds_participant * const pp = dds_entity_participant (&tp->m_entity);
   ddsrt_mutex_lock (&pp->m_entity.m_mutex);
-  assert (ktp->defer_set_qos > 0);
-  if (--ktp->defer_set_qos == 0)
+  assert (ktp->defer_set_qos > 0U);
+  if (--ktp->defer_set_qos == 0U)
     ddsrt_cond_broadcast (&pp->m_entity.m_cond);
   ddsrt_mutex_unlock (&pp->m_entity.m_mutex);
 }
 
 static void ktopic_unref (dds_participant * const pp, struct dds_ktopic * const ktp)
 {
-  if (--ktp->refc == 0)
+  if (--ktp->refc == 0U)
   {
     ddsrt_avl_delete (&participant_ktopics_treedef, &pp->m_ktopics, ktp);
     dds_delete_qos (ktp->qos);
@@ -633,7 +633,7 @@ dds_entity_t dds_create_topic (dds_entity_t participant, const dds_topic_descrip
   if ((hdl = dds_ensure_valid_data_representation (tpqos, allowed_repr, true)) != 0)
     goto err_data_repr;
 
-  assert (tpqos->present & DDSI_QP_DATA_REPRESENTATION && tpqos->data_representation.value.n > 0);
+  assert (tpqos->present & DDSI_QP_DATA_REPRESENTATION && tpqos->data_representation.value.n > 0U);
   dds_data_representation_id_t data_representation = tpqos->data_representation.value.ids[0];
 
   struct dds_sertype_default *st = ddsrt_malloc (sizeof (*st));
@@ -1011,7 +1011,7 @@ dds_return_t dds_get_name (dds_entity_t topic, char *name, size_t size)
 {
   dds_topic *t;
   dds_return_t ret;
-  if (size <= 0 || name == NULL)
+  if (size <= 0U || name == NULL)
     return DDS_RETCODE_BAD_PARAMETER;
   name[0] = '\0';
 
@@ -1030,7 +1030,7 @@ dds_return_t dds_get_type_name (dds_entity_t topic, char *name, size_t size)
 {
   dds_topic *t;
   dds_return_t ret;
-  if (size <= 0 || name == NULL)
+  if (size <= 0U || name == NULL)
     return DDS_RETCODE_BAD_PARAMETER;
   name[0] = '\0';
 
@@ -1122,7 +1122,7 @@ void dds_cdrstream_desc_from_topic_desc (struct dds_cdrstream_desc *desc, const 
   desc->ops.ops = dds_alloc (desc->ops.nops * sizeof (*desc->ops.ops));
   memcpy (desc->ops.ops, topic_desc->m_ops, desc->ops.nops * sizeof (*desc->ops.ops));
   desc->keys.nkeys = topic_desc->m_nkeys;
-  if (desc->keys.nkeys > 0)
+  if (desc->keys.nkeys > 0U)
   {
     desc->keys.keys = dds_alloc (desc->keys.nkeys * sizeof (*desc->keys.keys));
     for (uint32_t i = 0; i < desc->keys.nkeys; i++)

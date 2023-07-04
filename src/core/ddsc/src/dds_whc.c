@@ -55,7 +55,7 @@ struct dds_whc_default_node {
 #endif
   struct ddsi_serdata *serdata;
 };
-DDSRT_STATIC_ASSERT (offsetof (struct dds_whc_default_node, common) == 0);
+DDSRT_STATIC_ASSERT (offsetof (struct dds_whc_default_node, common) == 0U);
 
 struct whc_intvnode {
   ddsrt_avl_node_t avlnode;
@@ -251,7 +251,7 @@ static int compare_seq (const void *va, const void *vb)
 
 static struct dds_whc_default_node *whc_findmax_procedurally (const struct whc_impl *whc)
 {
-  if (whc->seq_size == 0)
+  if (whc->seq_size == 0U)
     return NULL;
   else if (whc->open_intv->first)
   {
@@ -448,12 +448,12 @@ struct ddsi_whc *dds_whc_new (struct ddsi_domaingv *gv, const struct whc_writer_
   struct whc_impl *whc;
   struct whc_intvnode *intv;
 
-  assert ((wrinfo->hdepth == 0 || wrinfo->tldepth <= wrinfo->hdepth) || wrinfo->is_transient_local);
+  assert ((wrinfo->hdepth == 0U || wrinfo->tldepth <= wrinfo->hdepth) || wrinfo->is_transient_local);
 
   whc = ddsrt_malloc (sizeof (*whc));
   whc->common.ops = &whc_ops;
   ddsrt_mutex_init (&whc->lock);
-  whc->xchecks = (gv->config.enabled_xchecks & DDSI_XCHECK_WHC) != 0;
+  whc->xchecks = (gv->config.enabled_xchecks & DDSI_XCHECK_WHC) != 0U;
   whc->gv = gv;
   whc->tkmap = gv->m_tkmap;
   memcpy (&whc->wrinfo, wrinfo, sizeof (*wrinfo));
@@ -490,7 +490,7 @@ struct ddsi_whc *dds_whc_new (struct ddsi_domaingv *gv, const struct whc_writer_
   whc->maxseq_node = NULL;
 
   ddsrt_mutex_lock (ddsrt_get_singleton_mutex ());
-  if (whc_count++ == 0)
+  if (whc_count++ == 0U)
     ddsi_freelist_init (&whc_node_freelist, MAX_FREELIST_SIZE, offsetof (struct dds_whc_default_node, next_seq));
   ddsrt_mutex_unlock (ddsrt_get_singleton_mutex ());
 
@@ -548,7 +548,7 @@ void whc_default_free (struct ddsi_whc *whc_generic)
   ddsrt_avl_free (&whc_seq_treedef, &whc->seq, ddsrt_free);
 
   ddsrt_mutex_lock (ddsrt_get_singleton_mutex ());
-  if (--whc_count == 0)
+  if (--whc_count == 0U)
     ddsi_freelist_fini (&whc_node_freelist, ddsrt_free);
   ddsrt_mutex_unlock (ddsrt_get_singleton_mutex ());
 
@@ -563,7 +563,7 @@ void whc_default_free (struct ddsi_whc *whc_generic)
 
 static void get_state_locked (const struct whc_impl *whc, struct ddsi_whc_state *st)
 {
-  if (whc->seq_size == 0)
+  if (whc->seq_size == 0U)
   {
     st->min_seq = st->max_seq = 0;
     st->unacked_bytes = 0;
@@ -770,7 +770,7 @@ static void whc_delete_one_intv (struct whc_impl *whc, struct whc_intvnode **p_i
      still non-empty and we don't have to drop the interval */
     assert (intv->min < whcn->common.seq);
     assert (whcn->prev_seq);
-    assert (whcn->prev_seq->common.seq + 1 == whcn->common.seq);
+    assert (whcn->prev_seq->common.seq + 1U == whcn->common.seq);
     intv->last = whcn->prev_seq;
     intv->maxp1--;
     *p_intv = ddsrt_avl_find_succ (&whc_seq_treedef, &whc->seq, intv);
@@ -788,10 +788,10 @@ static void whc_delete_one_intv (struct whc_impl *whc, struct whc_intvnode **p_i
 
     /* new interval starts at the next node */
     assert (whcn->next_seq);
-    assert (whcn->common.seq + 1 == whcn->next_seq->common.seq);
+    assert (whcn->common.seq + 1U == whcn->next_seq->common.seq);
     new_intv->first = whcn->next_seq;
     new_intv->last = intv->last;
-    new_intv->min = whcn->common.seq + 1;
+    new_intv->min = whcn->common.seq + 1U;
     new_intv->maxp1 = intv->maxp1;
     intv->last = whcn->prev_seq;
     intv->maxp1 = whcn->common.seq;
@@ -900,10 +900,10 @@ static uint32_t whc_default_remove_acked_messages_noidx (struct whc_impl *whc, d
   }
 
   *deferred_free_list = (struct ddsi_whc_node *) intv->first;
-  ndropped = (uint32_t) (whcn->common.seq - intv->min + 1);
+  ndropped = (uint32_t) (whcn->common.seq - intv->min + 1U);
 
   intv->first = whcn->next_seq;
-  intv->min = max_drop_seq + 1;
+  intv->min = max_drop_seq + 1U;
   if (whcn->next_seq == NULL)
   {
     whc->maxseq_node = NULL;
@@ -911,7 +911,7 @@ static uint32_t whc_default_remove_acked_messages_noidx (struct whc_impl *whc, d
   }
   else
   {
-    assert (whcn->next_seq->common.seq == max_drop_seq + 1);
+    assert (whcn->next_seq->common.seq == max_drop_seq + 1U);
     whcn->next_seq->prev_seq = NULL;
   }
   whcn->next_seq = NULL;
@@ -943,7 +943,7 @@ static uint32_t whc_default_remove_acked_messages_full (struct whc_impl *whc, dd
   uint32_t ndropped = 0;
 
   whcn = find_nextseq_intv (&intv, whc, whc->max_drop_seq);
-  if (whc->wrinfo.is_transient_local && whc->wrinfo.tldepth == 0)
+  if (whc->wrinfo.is_transient_local && whc->wrinfo.tldepth == 0U)
   {
     /* KEEP_ALL on transient local, so we can never ever delete anything, but
        we have to ack the data in whc */
@@ -1009,7 +1009,7 @@ static uint32_t whc_default_remove_acked_messages_full (struct whc_impl *whc, dd
    the T-L history but that are not anymore. Writing new samples will eventually push these
    out, but if the difference is large and the update rate low, it may take a long time.
    Thus, we had better prune them. */
-  if (whc->wrinfo.tldepth > 0 && whc->wrinfo.idxdepth > whc->wrinfo.tldepth)
+  if (whc->wrinfo.tldepth > 0U && whc->wrinfo.idxdepth > whc->wrinfo.tldepth)
   {
     assert (whc->wrinfo.hdepth == whc->wrinfo.idxdepth);
     TRACE ("  idxdepth %"PRIu32" > tldepth %"PRIu32" > 0 -- must prune\n", whc->wrinfo.idxdepth, whc->wrinfo.tldepth);
@@ -1097,7 +1097,7 @@ static uint32_t whc_default_remove_acked_messages (struct ddsi_whc *whc_generic,
      stored in acked state. The _noidx variant of removing messages assumes that unacked
      data exists in whc. So in case of a deadline, the _full variant is used instead,
      even when index depth is 0 */
-  if (whc->wrinfo.idxdepth == 0 && !whc->wrinfo.has_deadline && !whc->wrinfo.is_transient_local)
+  if (whc->wrinfo.idxdepth == 0U && !whc->wrinfo.has_deadline && !whc->wrinfo.is_transient_local)
     cnt = whc_default_remove_acked_messages_noidx (whc, max_drop_seq, deferred_free_list);
   else
     cnt = whc_default_remove_acked_messages_full (whc, max_drop_seq, deferred_free_list);
@@ -1146,7 +1146,7 @@ static struct dds_whc_default_node *whc_default_insert_seq (struct whc_impl *whc
   {
     /* open_intv is empty => reset open_intv */
     whc->open_intv->min = seq;
-    whc->open_intv->maxp1 = seq + 1;
+    whc->open_intv->maxp1 = seq + 1U;
     whc->open_intv->first = whc->open_intv->last = newn;
   }
   else if (whc->open_intv->maxp1 == seq)
@@ -1162,7 +1162,7 @@ static struct dds_whc_default_node *whc_default_insert_seq (struct whc_impl *whc
     ddsrt_avl_ipath_t path;
     intv1 = ddsrt_malloc (sizeof (*intv1));
     intv1->min = seq;
-    intv1->maxp1 = seq + 1;
+    intv1->maxp1 = seq + 1U;
     intv1->first = intv1->last = newn;
     if (ddsrt_avl_lookup_ipath (&whc_seq_treedef, &whc->seq, &seq, &path) != NULL)
       assert (0);
@@ -1209,7 +1209,7 @@ static int whc_default_insert (struct ddsi_whc *whc_generic, ddsi_seqno_t max_dr
   /* Seq must be greater than what is currently stored. Usually it'll
    be the next sequence number, but if there are no readers
    temporarily, a gap may be among the possibilities */
-  assert (whc->seq_size == 0 || seq > whc->maxseq_node->common.seq);
+  assert (whc->seq_size == 0U || seq > whc->maxseq_node->common.seq);
 
   /* Always insert in seq admin */
   newn = whc_default_insert_seq (whc, max_drop_seq, seq, exp, serdata);
@@ -1246,7 +1246,7 @@ static int whc_default_insert (struct ddsi_whc *whc_generic, ddsi_seqno_t max_dr
 #ifdef DDS_HAS_DEADLINE_MISSED
       ddsi_deadline_renew_instance_locked (&whc->deadline, &idxn->deadline);
 #endif
-      if (whc->wrinfo.idxdepth > 0)
+      if (whc->wrinfo.idxdepth > 0U)
       {
         struct dds_whc_default_node *oldn;
         if (++idxn->headidx == whc->wrinfo.idxdepth)
@@ -1260,7 +1260,7 @@ static int whc_default_insert (struct ddsi_whc *whc_generic, ddsi_seqno_t max_dr
         newn->idxnode = idxn;
         newn->idxnode_pos = idxn->headidx;
 
-        if (oldn && (whc->wrinfo.hdepth > 0 || oldn->common.seq <= max_drop_seq) && (!whc->wrinfo.is_transient_local || whc->wrinfo.tldepth > 0))
+        if (oldn && (whc->wrinfo.hdepth > 0U || oldn->common.seq <= max_drop_seq) && (!whc->wrinfo.is_transient_local || whc->wrinfo.tldepth > 0U))
         {
           TRACE (" prune whcn %p", (void *)oldn);
           assert (oldn != whc->maxseq_node || whc->wrinfo.has_deadline);
@@ -1273,7 +1273,7 @@ static int whc_default_insert (struct ddsi_whc *whc_generic, ddsi_seqno_t max_dr
         auto-acknowledged (for lack of reliable readers), and the keep-last T-L history is
         shallower than the keep-last regular history (normal path handles this via pruning in
         whc_default_remove_acked_messages, but that never happens when there are no readers). */
-        if (seq <= max_drop_seq && whc->wrinfo.tldepth > 0 && whc->wrinfo.idxdepth > whc->wrinfo.tldepth)
+        if (seq <= max_drop_seq && whc->wrinfo.tldepth > 0U && whc->wrinfo.idxdepth > whc->wrinfo.tldepth)
         {
           uint32_t pos = idxn->headidx + whc->wrinfo.idxdepth - whc->wrinfo.tldepth;
           if (pos >= whc->wrinfo.idxdepth)
@@ -1302,7 +1302,7 @@ static int whc_default_insert (struct ddsi_whc *whc_generic, ddsi_seqno_t max_dr
       idxn->tk = tk;
       idxn->prune_seq = 0;
       idxn->headidx = 0;
-      if (whc->wrinfo.idxdepth > 0)
+      if (whc->wrinfo.idxdepth > 0U)
       {
         idxn->hist[0] = newn;
         for (uint32_t i = 1; i < whc->wrinfo.idxdepth; i++)

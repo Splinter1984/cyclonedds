@@ -36,7 +36,7 @@ void ddsrt_init (void)
 retry:
   if (v > INIT_STATUS_OK)
     return;
-  else if (v == 1) {
+  else if (v == 1U) {
     ddsrt_mutex_init(&init_mutex);
     ddsrt_cond_init(&init_cond);
 #if _WIN32
@@ -47,7 +47,7 @@ retry:
     ddsrt_atomics_init();
     ddsrt_atomic_or32(&init_status, INIT_STATUS_OK);
   } else {
-    while (v > 1 && !(v & INIT_STATUS_OK)) {
+    while (v > 1U && !(v & INIT_STATUS_OK)) {
 #ifndef __COVERITY__
       /* This sleep makes Coverity warn about possibly sleeping while holding in a lock
          in many places, all because just-in-time creation of a thread descriptor ends
@@ -66,13 +66,13 @@ void ddsrt_fini (void)
   uint32_t v, nv;
   do {
     v = ddsrt_atomic_ld32(&init_status);
-    if (v == (INIT_STATUS_OK | 1)) {
+    if (v == (INIT_STATUS_OK | 1U)) {
       nv = 1;
     } else {
-      nv = v - 1;
+      nv = v - 1U;
     }
   } while (!ddsrt_atomic_cas32(&init_status, v, nv));
-  if (nv == 1)
+  if (nv == 1U)
   {
     ddsrt_cond_destroy(&init_cond);
     ddsrt_mutex_destroy(&init_mutex);

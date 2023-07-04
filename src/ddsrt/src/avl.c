@@ -666,7 +666,7 @@ void *ddsrt_avl_iter_next (ddsrt_avl_iter_t *iter)
 
 void ddsrt_avl_walk (const ddsrt_avl_treedef_t *td, ddsrt_avl_tree_t *tree, ddsrt_avl_walk_t f, void *a)
 {
-    const ddsrt_avl_node_t *todo[1+DDSRT_AVL_MAX_TREEHEIGHT];
+    const ddsrt_avl_node_t *todo[1U+DDSRT_AVL_MAX_TREEHEIGHT];
     const ddsrt_avl_node_t **todop = todo+1;
     *todop = tree->root;
     while (*todop) {

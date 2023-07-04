@@ -158,7 +158,7 @@ static void data_avail_cb_enter_listener_exclusive_access (dds_entity *e)
   // possibly unlocks and relocks e->m_observers_lock
   // afterward e->m_listener is stable
   e->m_cb_pending_count++;
-  while (e->m_cb_count > 0)
+  while (e->m_cb_count > 0U)
     ddsrt_cond_wait (&e->m_observers_cond, &e->m_observers_lock);
   e->m_cb_count++;
 }
@@ -197,7 +197,7 @@ static uint32_t data_avail_cb_set_status (dds_entity *rd, uint32_t status_and_ma
 
 static void data_avail_cb_trigger_waitsets (dds_entity *rd, uint32_t signal)
 {
-  if (signal == 0)
+  if (signal == 0U)
     return;
 
   if (signal & DDS_DATA_ON_READERS_STATUS)
@@ -299,7 +299,7 @@ static void update_sample_rejected (struct dds_sample_rejected_status * __restri
 
 static void update_liveliness_changed (struct dds_liveliness_changed_status * __restrict st, const ddsi_status_cb_data_t *data)
 {
-  DDSRT_STATIC_ASSERT ((uint32_t) DDSI_LIVELINESS_CHANGED_ADD_ALIVE == 0 &&
+  DDSRT_STATIC_ASSERT ((uint32_t) DDSI_LIVELINESS_CHANGED_ADD_ALIVE == 0U &&
                        DDSI_LIVELINESS_CHANGED_ADD_ALIVE < DDSI_LIVELINESS_CHANGED_ADD_NOT_ALIVE &&
                        DDSI_LIVELINESS_CHANGED_ADD_NOT_ALIVE < DDSI_LIVELINESS_CHANGED_REMOVE_NOT_ALIVE &&
                        DDSI_LIVELINESS_CHANGED_REMOVE_NOT_ALIVE < DDSI_LIVELINESS_CHANGED_REMOVE_ALIVE &&
@@ -399,7 +399,7 @@ void dds_reader_status_cb (void *ventity, const struct ddsi_status_cb_data *data
   /* FIXME: why do this if no listener is set? */
   ddsrt_mutex_lock (&rd->m_entity.m_observers_lock);
   rd->m_entity.m_cb_pending_count++;
-  while (rd->m_entity.m_cb_count > 0)
+  while (rd->m_entity.m_cb_count > 0U)
     ddsrt_cond_wait (&rd->m_entity.m_observers_cond, &rd->m_entity.m_observers_lock);
   rd->m_entity.m_cb_count++;
 
@@ -723,7 +723,7 @@ static dds_entity_t dds_create_reader_int (dds_entity_t participant_or_subscribe
   // materialized but no longer so prior to `dds_entity_register_child`.
   ddsrt_mutex_lock (&rd->m_entity.m_observers_lock);
   ddsrt_mutex_lock (&sub->m_entity.m_observers_lock);
-  if (sub->materialize_data_on_readers == 0)
+  if (sub->materialize_data_on_readers == 0U)
     ddsrt_atomic_and32 (&rd->m_entity.m_status.m_status_and_mask, ~(uint32_t)(DDS_DATA_ON_READERS_STATUS << SAM_ENABLED_SHIFT));
   ddsrt_mutex_unlock (&sub->m_entity.m_observers_lock);
   ddsrt_mutex_unlock (&rd->m_entity.m_observers_lock);

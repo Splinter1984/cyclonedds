@@ -27,7 +27,7 @@ extern "C" {
 
 // macOS' mutexes require quite a lot of space, but it is not quite enough
 // to make this system-dependent
-#define DDS_DATA_ALLOCATOR_MAX_SIZE (12 * sizeof (void *))
+#define DDS_DATA_ALLOCATOR_MAX_SIZE (12U * sizeof (void *))
 
 /**
  * @ingroup data_allocator

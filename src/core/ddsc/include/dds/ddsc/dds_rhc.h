@@ -14,7 +14,7 @@
 #include "dds/ddsrt/static_assert.h"
 #include "dds/ddsi/ddsi_rhc.h"
 
-#define NO_STATE_MASK_SET   (DDS_ANY_STATE + 1)
+#define NO_STATE_MASK_SET   (DDS_ANY_STATE + 1u)
 
 #if defined (__cplusplus)
 extern "C" {

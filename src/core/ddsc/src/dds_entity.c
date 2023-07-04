@@ -452,7 +452,7 @@ static dds_return_t really_delete_pinned_closed_locked (struct dds_entity *e, en
      - Reset all listeners so no new listener invocations will occur
      - Wait for all pending ones ones to end as well */
   ddsrt_mutex_lock (&e->m_observers_lock);
-  while (e->m_cb_pending_count > 0)
+  while (e->m_cb_pending_count > 0U)
     ddsrt_cond_wait (&e->m_observers_cond, &e->m_observers_lock);
   dds_reset_listener (&e->m_listener);
   ddsrt_mutex_unlock (&e->m_observers_lock);
@@ -492,7 +492,7 @@ static dds_return_t really_delete_pinned_closed_locked (struct dds_entity *e, en
    *
    * To circumvent the problem. We ignore topics in the first loop.
    */
-  DDSRT_STATIC_ASSERT ((uint32_t) DDS_KIND_MAX < 32);
+  DDSRT_STATIC_ASSERT ((uint32_t) DDS_KIND_MAX < 32U);
   static const uint32_t disallowed_kinds[] = {
     1u << (uint32_t) DDS_KIND_TOPIC,
     (uint32_t) 0
@@ -617,7 +617,7 @@ dds_return_t dds_get_children (dds_entity_t entity, dds_entity_t *children, size
   dds_entity *e;
   dds_return_t rc;
 
-  if ((children != NULL && (size == 0 || size > INT32_MAX)) || (children == NULL && size != 0))
+  if ((children != NULL && (size == 0U || size > INT32_MAX)) || (children == NULL && size != 0U))
     return DDS_RETCODE_BAD_PARAMETER;
 
   if ((rc = dds_entity_pin (entity, &e)) != DDS_RETCODE_OK)
@@ -735,7 +735,7 @@ dds_return_t dds_get_qos (dds_entity_t entity, dds_qos_t *qos)
 
 static dds_return_t dds_set_qos_locked_raw (dds_entity *e, dds_qos_t **e_qos_ptr, const dds_qos_t *qos, uint64_t mask, const struct ddsrt_log_cfg *logcfg)
 {
-  const bool enabled = ((e->m_flags & DDS_ENTITY_ENABLED) != 0);
+  const bool enabled = ((e->m_flags & DDS_ENTITY_ENABLED) != 0U);
   dds_return_t ret;
 
   /* Any attempt to do this on a topic ends up doing it on the ktopic instead, so that there is
@@ -756,7 +756,7 @@ static dds_return_t dds_set_qos_locked_raw (dds_entity *e, dds_qos_t **e_qos_ptr
   else
   {
     const uint64_t delta = ddsi_xqos_delta (*e_qos_ptr, newqos, ~(uint64_t)0);
-    if (delta == 0)
+    if (delta == 0U)
     {
       /* new settings are identical to the old */
       goto error_or_nochange;
@@ -821,7 +821,7 @@ static dds_return_t dds_set_qos_locked_impl (dds_entity *e, const dds_qos_t *qos
     struct dds_ktopic * const ktp = tp->m_ktopic;
     dds_return_t rc;
     ddsrt_mutex_lock (&pp->m_entity.m_mutex);
-    while (ktp->defer_set_qos != 0)
+    while (ktp->defer_set_qos != 0U)
       ddsrt_cond_wait (&pp->m_entity.m_cond, &pp->m_entity.m_mutex);
 
     rc = dds_set_qos_locked_raw (e, &ktp->qos, qos, mask, logcfg);
@@ -1002,7 +1002,7 @@ static void pushdown_listener (dds_entity *e)
       ddsrt_mutex_unlock (&e->m_mutex);
 
       ddsrt_mutex_lock (&c->m_observers_lock);
-      while (c->m_cb_pending_count > 0)
+      while (c->m_cb_pending_count > 0U)
         ddsrt_cond_wait (&c->m_observers_cond, &c->m_observers_lock);
 
       ddsrt_mutex_lock (&e->m_observers_lock);
@@ -1029,7 +1029,7 @@ dds_return_t dds_set_listener (dds_entity_t entity, const dds_listener_t *listen
     return rc;
 
   ddsrt_mutex_lock (&e->m_observers_lock);
-  while (e->m_cb_pending_count > 0)
+  while (e->m_cb_pending_count > 0U)
     ddsrt_cond_wait (&e->m_observers_cond, &e->m_observers_lock);
 
   /* new listener is constructed by combining "listener" with the ancestral listeners;
@@ -1066,7 +1066,7 @@ dds_return_t dds_enable (dds_entity_t entity)
   if ((rc = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) != DDS_RETCODE_OK)
     return rc;
 
-  if ((e->m_flags & DDS_ENTITY_ENABLED) == 0)
+  if ((e->m_flags & DDS_ENTITY_ENABLED) == 0U)
   {
     /* TODO: Really enable. */
     e->m_flags |= DDS_ENTITY_ENABLED;
@@ -1107,7 +1107,7 @@ dds_return_t dds_set_status_mask (dds_entity_t entity, uint32_t mask)
   dds_entity *e;
   dds_return_t ret;
 
-  if ((mask & ~SAM_STATUS_MASK) != 0)
+  if ((mask & ~SAM_STATUS_MASK) != 0U)
     return DDS_RETCODE_BAD_PARAMETER;
 
   /* Lock rather than pin so this is can be done atomically with respect to dds_delete */
@@ -1124,7 +1124,7 @@ dds_return_t dds_set_status_mask (dds_entity_t entity, uint32_t mask)
   {
     assert (entity_has_status (e));
     ddsrt_mutex_lock (&e->m_observers_lock);
-    while (e->m_cb_pending_count > 0)
+    while (e->m_cb_pending_count > 0U)
       ddsrt_cond_wait (&e->m_observers_cond, &e->m_observers_lock);
 
     // readers: don't touch DATA_ON_READERS_STATUS in mask
@@ -1149,7 +1149,7 @@ static dds_return_t dds_readtake_status (dds_entity_t entity, uint32_t *status, 
 
   if (status == NULL)
     return DDS_RETCODE_BAD_PARAMETER;
-  if ((mask & ~SAM_STATUS_MASK) != 0)
+  if ((mask & ~SAM_STATUS_MASK) != 0U)
     return DDS_RETCODE_BAD_PARAMETER;
 
   if ((ret = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) != DDS_RETCODE_OK)
@@ -1159,7 +1159,7 @@ static dds_return_t dds_readtake_status (dds_entity_t entity, uint32_t *status, 
   {
     uint32_t s;
     assert (entity_has_status (e));
-    if (mask == 0)
+    if (mask == 0U)
       mask = SAM_STATUS_MASK;
     if (reset)
       s = ddsrt_atomic_and32_ov (&e->m_status.m_status_and_mask, ~mask) & mask;
@@ -1334,11 +1334,11 @@ dds_return_t dds_triggered (dds_entity_t entity)
   if ((ret = dds_entity_lock (entity, DDS_KIND_DONTCARE, &e)) != DDS_RETCODE_OK)
     return ret;
   if (!entity_has_status (e))
-    ret = (ddsrt_atomic_ld32 (&e->m_status.m_trigger) != 0);
+    ret = (ddsrt_atomic_ld32 (&e->m_status.m_trigger) != 0U);
   else
   {
     const uint32_t sm = ddsrt_atomic_ld32 (&e->m_status.m_status_and_mask);
-    ret = ((sm & (sm >> SAM_ENABLED_SHIFT)) != 0);
+    ret = ((sm & (sm >> SAM_ENABLED_SHIFT)) != 0U);
   }
   dds_entity_unlock (e);
   return ret;

@@ -40,7 +40,7 @@ static dds_return_t dds_read_impl (bool take, dds_entity_t reader_or_condition, 
 #define NC_FREE_BUF 2u
 #define NC_RESET_BUF 4u
 
-  if (buf == NULL || si == NULL || maxs == 0 || bufsz == 0 || bufsz < maxs || maxs > INT32_MAX)
+  if (buf == NULL || si == NULL || maxs == 0U || bufsz == 0U || bufsz < maxs || maxs > INT32_MAX)
     return DDS_RETCODE_BAD_PARAMETER;
 
   if ((ret = dds_entity_pin (reader_or_condition, &entity)) < 0) {
@@ -145,7 +145,7 @@ static dds_return_t dds_readcdr_impl (bool take, dds_entity_t reader_or_conditio
   struct dds_reader *rd;
   struct dds_entity *entity;
 
-  if (buf == NULL || si == NULL || maxs == 0 || maxs > INT32_MAX)
+  if (buf == NULL || si == NULL || maxs == 0U || maxs > INT32_MAX)
     return DDS_RETCODE_BAD_PARAMETER;
 
   if ((ret = dds_entity_pin (reader_or_condition, &entity)) < 0) {

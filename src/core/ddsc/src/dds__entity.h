@@ -73,7 +73,7 @@ inline dds_entity *dds_entity_from_handle_link (struct dds_handle_link *hdllink)
 
 /** @component generic_entity */
 inline bool dds_entity_is_enabled (const dds_entity *e) {
-  return (e->m_flags & DDS_ENTITY_ENABLED) != 0;
+  return (e->m_flags & DDS_ENTITY_ENABLED) != 0U;
 }
 
 /** @component generic_entity */

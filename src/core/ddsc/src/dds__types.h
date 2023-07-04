@@ -29,7 +29,7 @@
 #include "iceoryx_binding_c/publisher.h"
 #include "iceoryx_binding_c/subscriber.h"
 #include "dds__shm_monitor.h"
-#define MAX_PUB_LOANS 8
+#define MAX_PUB_LOANS 8U
 #endif
 
 #if defined (__cplusplus)

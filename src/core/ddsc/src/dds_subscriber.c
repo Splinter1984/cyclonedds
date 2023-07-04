@@ -143,13 +143,13 @@ void dds_subscriber_adjust_materialize_data_on_readers (dds_subscriber *sub, boo
   if (materialization_needed)
   {
     // FIXME: indeed no need to propagate if flag is already set?
-    if (sub->materialize_data_on_readers++ == 0)
+    if (sub->materialize_data_on_readers++ == 0U)
       propagate = true;
   }
   else
   {
     assert ((sub->materialize_data_on_readers & DDS_SUB_MATERIALIZE_DATA_ON_READERS_MASK) > 0);
-    if (--sub->materialize_data_on_readers == 0)
+    if (--sub->materialize_data_on_readers == 0U)
     {
       sub->materialize_data_on_readers &= ~DDS_SUB_MATERIALIZE_DATA_ON_READERS_FLAG;
       propagate = true;
@@ -196,7 +196,7 @@ void dds_subscriber_adjust_materialize_data_on_readers (dds_subscriber *sub, boo
     ddsrt_atomic_or32 (&sub->m_entity.m_status.m_status_and_mask, DDS_DATA_ON_READERS_STATUS);
   else
     dds_entity_status_reset (&sub->m_entity, DDS_DATA_ON_READERS_STATUS);
-  if ((sub->materialize_data_on_readers & DDS_SUB_MATERIALIZE_DATA_ON_READERS_MASK) != 0)
+  if ((sub->materialize_data_on_readers & DDS_SUB_MATERIALIZE_DATA_ON_READERS_MASK) != 0U)
     sub->materialize_data_on_readers |= DDS_SUB_MATERIALIZE_DATA_ON_READERS_FLAG;
   ddsrt_mutex_unlock (&sub->m_entity.m_observers_lock);
   ddsrt_mutex_unlock (&sub->m_entity.m_mutex);

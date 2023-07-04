@@ -123,10 +123,10 @@ static void format_address (const ddsi_xlocator_t *n, void *varg)
   if (!arg->buf) return;
 
   ddsi_xlocator_to_string (buf, sizeof(buf), n);
-  const size_t nsize = strlen(buf) + (arg->first ? 0 : 1);
+  const size_t nsize = strlen(buf) + (arg->first ? 0U : 1U);
 
-  if (nsize > arg->buf_size - arg->buf_pos - 1) {
-    arg->buf_size += 4 * nsize;
+  if (nsize > arg->buf_size - arg->buf_pos - 1U) {
+    arg->buf_size += 4U * nsize;
     char * new_buffer = ddsrt_realloc(arg->buf, arg->buf_size);
 
     if (!new_buffer) return;
@@ -310,7 +310,7 @@ static void convkey (dds_guid_t *key, const ddsi_guid_t *guid)
 
 static char *dds_string_dup_reuse (char *old, const char *src)
 {
-  size_t size = strlen (src) + 1;
+  size_t size = strlen (src) + 1U;
   char *new = dds_realloc(old, size);
   return memcpy (new, src, size);
 }

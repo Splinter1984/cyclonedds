@@ -64,7 +64,7 @@ DDS_INLINE_EXPORT inline int16_t ddsrt_bswap2 (int16_t x)
  */
 DDS_INLINE_EXPORT inline uint32_t ddsrt_bswap4u (uint32_t x)
 {
-  return (x >> 24) | ((x >> 8) & 0xff00) | ((x << 8) & 0xff0000) | (x << 24);
+  return (x >> 24) | ((x >> 8) & 0xff00U) | ((x << 8) & 0xff0000U) | (x << 24);
 }
 
 /**

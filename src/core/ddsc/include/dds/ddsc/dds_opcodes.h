@@ -34,70 +34,70 @@ extern "C" {
  * @ingroup serialization
  * @brief Mask for the OP
  */
-#define DDS_OP_MASK               0xff000000
+#define DDS_OP_MASK               0xff000000U
 
 /**
  * @anchor DDS_OP_TYPE_FLAGS_MASK
  * @ingroup serialization
  * @brief Mask for the OP type flags
  */
-#define DDS_OP_TYPE_FLAGS_MASK    0x00800000
+#define DDS_OP_TYPE_FLAGS_MASK    0x00800000U
 
 /**
  * @anchor DDS_OP_TYPE_MASK
  * @ingroup serialization
  * @brief Mask for the OP type
  */
-#define DDS_OP_TYPE_MASK          0x007f0000
+#define DDS_OP_TYPE_MASK          0x007f0000U
 
 /**
  * @anchor DDS_OP_SUBTYPE_MASK
  * @ingroup serialization
  * @brief Mask for the OP subtype
  */
-#define DDS_OP_SUBTYPE_MASK       0x0000ff00
+#define DDS_OP_SUBTYPE_MASK       0x0000ff00U
 
 /**
  * @anchor DDS_OP_JMP_MASK
  * @ingroup serialization
  * @brief Mask for the OP jump
  */
-#define DDS_OP_JMP_MASK           0x0000ffff
+#define DDS_OP_JMP_MASK           0x0000ffffU
 
 /**
  * @anchor DDS_OP_FLAGS_MASK
  * @ingroup serialization
  * @brief Mask for the OP flags
  */
-#define DDS_OP_FLAGS_MASK         0x000000ff
+#define DDS_OP_FLAGS_MASK         0x000000ffU
 
 /**
  * @anchor DDS_JEQ_TYPE_FLAGS_MASK
  * @ingroup serialization
  * @brief Mask for the JEQ type flags
  */
-#define DDS_JEQ_TYPE_FLAGS_MASK   0x00800000
+#define DDS_JEQ_TYPE_FLAGS_MASK   0x00800000U
 
 /**
  * @anchor DDS_JEQ_TYPE_MASK
  * @ingroup serialization
  * @brief Mask for the JEQ type
  */
-#define DDS_JEQ_TYPE_MASK         0x007f0000
+#define DDS_JEQ_TYPE_MASK         0x007f0000U
 
 /**
  * @anchor DDS_PLM_FLAGS_MASK
  * @ingroup serialization
  * @brief Mask for the PLM flags
  */
-#define DDS_PLM_FLAGS_MASK        0x00ff0000
+#define DDS_PLM_FLAGS_MASK        0x00ff0000U
 
 /**
  * @anchor DDS_KOF_OFFSET_MASK
  * @ingroup serialization
  * @brief Mask for the KOF offset
  */
-#define DDS_KOF_OFFSET_MASK       0x0000ffff
+#define DDS_KOF_OFFSET_MASK       0x0000ffffU
 
 
 
@@ -113,7 +113,7 @@ extern "C" {
  * @ingroup serialization
  * @brief Extract the DDS OP_TYPE from a uint32 as a \ref dds_stream_typecode
  */
-#define DDS_OP_TYPE(o)        ((enum dds_stream_typecode) (((o) & DDS_OP_TYPE_MASK) >> 16))
+#define DDS_OP_TYPE(o)        ((enum dds_stream_typecode) (((o) & DDS_OP_TYPE_MASK) >> 16U))
 
 /**
  * @anchor DDS_OP_TYPE_FLAGS
@@ -129,7 +129,7 @@ extern "C" {
  * @brief Extract the DDS OP_SUBTYPE from a uint32 as a \ref dds_stream_typecode
  * Used for collections, the OP_TYPE is array/sequence
  */
-#define DDS_OP_SUBTYPE(o)     ((enum dds_stream_typecode) (((o) & DDS_OP_SUBTYPE_MASK) >> 8))
+#define DDS_OP_SUBTYPE(o)     ((enum dds_stream_typecode) (((o) & DDS_OP_SUBTYPE_MASK) >> 8U))
 
 /**
  * @anchor DDS_OP_FLAGS

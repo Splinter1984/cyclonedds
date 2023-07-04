@@ -470,7 +470,7 @@ static dds_return_t dds_write_impl_iox (dds_writer *wr, struct ddsi_writer *ddsi
   const bool use_only_iceoryx =
       no_network_readers &&
       ddsi_wr->xqos->durability.kind == DDS_DURABILITY_VOLATILE &&
-      num_fast_path_readers == 0;
+      num_fast_path_readers == 0U;
 
   // 4. Prepare serdata
   // avoid serialization for volatile writers if there are no network readers

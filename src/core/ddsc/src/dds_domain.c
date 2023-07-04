@@ -152,7 +152,7 @@ static dds_entity_t dds_domain_init (dds_domain *domain, dds_domainid_t domain_i
      domain to configured to do so. */
   if (domain->gv.config.liveliness_monitoring)
   {
-    if (dds_global.threadmon_count++ == 0)
+    if (dds_global.threadmon_count++ == 0U)
     {
       /* FIXME: configure settings */
       dds_global.threadmon = ddsi_threadmon_new (DDS_MSECS (333), true);
@@ -188,10 +188,10 @@ static dds_entity_t dds_domain_init (dds_domain *domain, dds_domainid_t domain_i
 
 fail_ddsi_start:
   dds__builtin_fini (domain);
-  if (domain->gv.config.liveliness_monitoring && dds_global.threadmon_count == 1)
+  if (domain->gv.config.liveliness_monitoring && dds_global.threadmon_count == 1U)
     ddsi_threadmon_stop (dds_global.threadmon);
 fail_threadmon_start:
-  if (domain->gv.config.liveliness_monitoring && --dds_global.threadmon_count == 0)
+  if (domain->gv.config.liveliness_monitoring && --dds_global.threadmon_count == 0U)
   {
     ddsi_threadmon_free (dds_global.threadmon);
     dds_global.threadmon = NULL;
@@ -337,7 +337,7 @@ static dds_return_t dds_domain_free (dds_entity *vdomain)
   /* tearing down the top-level object has more consequences, so it waits until signalled that all
      domains have been removed */
   ddsrt_mutex_lock (&dds_global.m_mutex);
-  if (domain->gv.config.liveliness_monitoring && --dds_global.threadmon_count == 0)
+  if (domain->gv.config.liveliness_monitoring && --dds_global.threadmon_count == 0U)
   {
     ddsi_threadmon_stop (dds_global.threadmon);
     ddsi_threadmon_free (dds_global.threadmon);
@@ -410,7 +410,7 @@ void dds_write_set_batch (bool enable)
   {
     /* Must be sure that the compiler doesn't reload curr_id from dom->m_id */
     dds_domainid_t curr_id = *((volatile dds_domainid_t *) &dom->m_id);
-    next_id = curr_id + 1;
+    next_id = curr_id + 1U;
     dom->gv.config.whc_batch = enable;
 
     dds_instance_handle_t last_iid = 0;

@@ -38,21 +38,21 @@ DDS_EXPORT extern const struct dds_cdrstream_allocator dds_cdrstream_default_all
  * @ingroup alloc
  * @brief Instruction to free all keyfields in sample
  */
-#define DDS_FREE_KEY_BIT 0x01
+#define DDS_FREE_KEY_BIT 0x01U
 
 /**
  * @anchor DDS_FREE_CONTENTS_BIT
  * @ingroup alloc
  * @brief Instruction to free all non-keyfields in sample
  */
-#define DDS_FREE_CONTENTS_BIT 0x02
+#define DDS_FREE_CONTENTS_BIT 0x02U
 
 /**
  * @anchor DDS_FREE_ALL_BIT
  * @ingroup alloc
  * @brief Instruction to free outer sample
  */
-#define DDS_FREE_ALL_BIT 0x04
+#define DDS_FREE_ALL_BIT 0x04U
 
 /**
  * @brief Freeing operation type

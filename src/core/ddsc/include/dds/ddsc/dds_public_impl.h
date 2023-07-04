@@ -266,8 +266,8 @@ dds_topic_descriptor_t;
 #define DDS_DOMAIN_DEFAULT ((uint32_t) 0xffffffffu)
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-#define DDS_HANDLE_NIL 0
-#define DDS_ENTITY_NIL 0
+#define DDS_HANDLE_NIL 0U
+#define DDS_ENTITY_NIL 0U
 #endif
 
 /**

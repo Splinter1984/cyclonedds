@@ -125,7 +125,7 @@ void dds_writer_status_cb (void *entity, const struct ddsi_status_cb_data *data)
   /* FIXME: why wait if no listener is set? */
   ddsrt_mutex_lock (&wr->m_entity.m_observers_lock);
   wr->m_entity.m_cb_pending_count++;
-  while (wr->m_entity.m_cb_count > 0)
+  while (wr->m_entity.m_cb_count > 0U)
     ddsrt_cond_wait (&wr->m_entity.m_observers_cond, &wr->m_entity.m_observers_lock);
   wr->m_entity.m_cb_count++;
 

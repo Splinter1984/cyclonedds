@@ -31,7 +31,7 @@ dds_return_t dds_get_matched_subscriptions (dds_entity_t writer, dds_instance_ha
 {
   dds_writer *wr;
   dds_return_t rc;
-  if ((rds != NULL && (nrds == 0 || nrds > INT32_MAX)) || (rds == NULL && nrds != 0))
+  if ((rds != NULL && (nrds == 0U || nrds > INT32_MAX)) || (rds == NULL && nrds != 0U))
     return DDS_RETCODE_BAD_PARAMETER;
   if ((rc = dds_writer_lock (writer, &wr)) != DDS_RETCODE_OK)
     return rc;
@@ -47,7 +47,7 @@ dds_return_t dds_get_matched_publications (dds_entity_t reader, dds_instance_han
 {
   dds_reader *rd;
   dds_return_t rc;
-  if ((wrs != NULL && (nwrs == 0 || nwrs > INT32_MAX)) || (wrs == NULL && nwrs != 0))
+  if ((wrs != NULL && (nwrs == 0U || nwrs > INT32_MAX)) || (wrs == NULL && nwrs != 0U))
     return DDS_RETCODE_BAD_PARAMETER;
   if ((rc = dds_reader_lock (reader, &rd)) != DDS_RETCODE_OK)
     return rc;

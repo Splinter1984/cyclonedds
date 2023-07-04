@@ -59,8 +59,8 @@ bool dds_shm_compatible_qos_and_topic (const struct dds_qos *qos, const struct d
   }
 
   // only default partition or one non-wildcard partition
-  if (qos->partition.n > 1 ||
-      (qos->partition.n == 1 && is_wildcard_partition (qos->partition.strs[0])))
+  if (qos->partition.n > 1U ||
+      (qos->partition.n == 1U && is_wildcard_partition (qos->partition.strs[0])))
   {
     return false;
   }
@@ -75,8 +75,8 @@ char *dds_shm_partition_topic (const struct dds_qos *qos, const struct dds_topic
   const char *partition = "";
   if (qos->present & DDSI_QP_PARTITION)
   {
-    assert (qos->partition.n <= 1);
-    if (qos->partition.n == 1)
+    assert (qos->partition.n <= 1U);
+    if (qos->partition.n == 1U)
       partition = qos->partition.strs[0];
   }
   assert (partition);
@@ -84,7 +84,7 @@ char *dds_shm_partition_topic (const struct dds_qos *qos, const struct dds_topic
 
   // compute combined string length, allowing for escaping dots
   // (using \ in good traditional C style)
-  size_t size = 1 + strlen (tp->m_name) + 1; // dot & terminating 0
+  size_t size = 1U + strlen (tp->m_name) + 1U; // dot & terminating 0
   for (char const *src = partition; *src; src++)
   {
     if (*src == '\\' || *src == '.')

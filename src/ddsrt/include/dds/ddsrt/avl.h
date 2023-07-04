@@ -169,7 +169,7 @@
 extern "C" {
 #endif
 
-#define DDSRT_AVL_MAX_TREEHEIGHT (12 * sizeof (void *))
+#define DDSRT_AVL_MAX_TREEHEIGHT (12U * sizeof (void *))
 
 /**
  * @brief User defined compare function.
@@ -226,9 +226,9 @@ typedef struct ddsrt_avl_node {
 /**
  * Save a reference/dereference when using an indirect key. For details, see @ref ddsrt_avl_treedef_init.
  */
-#define DDSRT_AVL_TREEDEF_FLAG_INDKEY 1
-#define DDSRT_AVL_TREEDEF_FLAG_R 2 /**< Flag used internally by @ref ddsrt_avl_treedef_init_r : compare function has extra argument */
-#define DDSRT_AVL_TREEDEF_FLAG_ALLOWDUPS 4 /**< Flag for @ref ddsrt_avl_treedef_init : multiple nodes with the same key are allowed */
+#define DDSRT_AVL_TREEDEF_FLAG_INDKEY 1U
+#define DDSRT_AVL_TREEDEF_FLAG_R 2U /**< Flag used internally by @ref ddsrt_avl_treedef_init_r : compare function has extra argument */
+#define DDSRT_AVL_TREEDEF_FLAG_ALLOWDUPS 4U /**< Flag for @ref ddsrt_avl_treedef_init : multiple nodes with the same key are allowed */
 
 /**
  * @brief The tree definition.
@@ -308,7 +308,7 @@ typedef struct ddsrt_avl_iter {
     const ddsrt_avl_treedef_t *td;
     ddsrt_avl_node_t *right;
     ddsrt_avl_node_t **todop;
-    ddsrt_avl_node_t *todo[1+DDSRT_AVL_MAX_TREEHEIGHT];
+    ddsrt_avl_node_t *todo[1U+DDSRT_AVL_MAX_TREEHEIGHT];
 } ddsrt_avl_iter_t;
 
 /** @brief Counted version of @ref ddsrt_avl_iter*/

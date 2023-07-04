@@ -161,13 +161,13 @@ static bool union_disc_valid (dds_dynamic_type_spec_t type_spec)
 static bool typename_valid (const char *name)
 {
   size_t len = strlen (name);
-  return len > 0 && len < (sizeof (DDS_XTypes_QualifiedTypeName) - 1);
+  return len > 0U && len < (sizeof (DDS_XTypes_QualifiedTypeName) - 1U);
 }
 
 static bool membername_valid (const char *name)
 {
   size_t len = strlen (name);
-  return len > 0 && len < (sizeof (DDS_XTypes_MemberName) - 1);
+  return len > 0U && len < (sizeof (DDS_XTypes_MemberName) - 1U);
 }
 
 dds_dynamic_type_t dds_dynamic_type_create (dds_entity_t entity, dds_dynamic_type_descriptor_t descriptor)
@@ -199,7 +199,7 @@ dds_dynamic_type_t dds_dynamic_type_create (dds_entity_t entity, dds_dynamic_typ
       type.ret = ddsi_dynamic_type_create_primitive (gv, get_dtype_complete_addr (&type), descriptor.kind);
       break;
     case DDS_DYNAMIC_STRING8:
-      if (descriptor.num_bounds > 1)
+      if (descriptor.num_bounds > 1U)
         goto err_bad_param;
       type.ret = ddsi_dynamic_type_create_string8 (gv, get_dtype_complete_addr (&type), descriptor.num_bounds ? descriptor.bounds[0] : 0);
       break;
@@ -221,20 +221,20 @@ dds_dynamic_type_t dds_dynamic_type_create (dds_entity_t entity, dds_dynamic_typ
       type.ret = ddsi_dynamic_type_create_bitmask (gv, get_dtype_complete_addr (&type), descriptor.name);
       break;
     case DDS_DYNAMIC_ARRAY: {
-      if (!typespec_valid (descriptor.element_type, false) || !typename_valid (descriptor.name) || descriptor.num_bounds == 0 || descriptor.bounds == NULL)
+      if (!typespec_valid (descriptor.element_type, false) || !typename_valid (descriptor.name) || descriptor.num_bounds == 0U || descriptor.bounds == NULL)
         goto err_bad_param;
       for (uint32_t n = 0; n < descriptor.num_bounds; n++)
-        if (descriptor.bounds[n] == 0)
+        if (descriptor.bounds[n] == 0U)
           goto err_bad_param;
       dds_dynamic_type_t element_type = dyntype_from_typespec (gv, descriptor.element_type);
       type.ret = ddsi_dynamic_type_create_array (gv, get_dtype_complete_addr (&type), descriptor.name, get_dtype_complete_addr (&element_type), descriptor.num_bounds, descriptor.bounds);
       break;
     }
     case DDS_DYNAMIC_SEQUENCE: {
-      if (!typespec_valid (descriptor.element_type, false) || !typename_valid (descriptor.name) || descriptor.num_bounds > 1 || (descriptor.num_bounds == 1 && descriptor.bounds == NULL))
+      if (!typespec_valid (descriptor.element_type, false) || !typename_valid (descriptor.name) || descriptor.num_bounds > 1U || (descriptor.num_bounds == 1U && descriptor.bounds == NULL))
         goto err_bad_param;
       dds_dynamic_type_t element_type = dyntype_from_typespec (gv, descriptor.element_type);
-      type.ret = ddsi_dynamic_type_create_sequence (gv, get_dtype_complete_addr (&type), descriptor.name, get_dtype_complete_addr (&element_type), descriptor.num_bounds > 0 ? descriptor.bounds[0] : 0);
+      type.ret = ddsi_dynamic_type_create_sequence (gv, get_dtype_complete_addr (&type), descriptor.name, get_dtype_complete_addr (&element_type), descriptor.num_bounds > 0U ? descriptor.bounds[0] : 0);
       break;
     }
     case DDS_DYNAMIC_STRUCTURE: {
@@ -337,7 +337,7 @@ dds_return_t dds_dynamic_type_add_member (dds_dynamic_type_t *type, dds_dynamic_
       break;
     case DDS_DYNAMIC_UNION: {
       if (!typespec_valid (member_descriptor.type, false) ||
-        (!member_descriptor.default_label && (member_descriptor.num_labels == 0 || member_descriptor.labels == NULL)))
+        (!member_descriptor.default_label && (member_descriptor.num_labels == 0U || member_descriptor.labels == NULL)))
       {
         type->ret = DDS_RETCODE_BAD_PARAMETER;
         goto err;
@@ -461,10 +461,10 @@ dds_return_t dds_dynamic_type_set_bit_bound (dds_dynamic_type_t *type, uint16_t 
   switch (xtkind_to_typekind (ddsi_type_get_kind (get_dtype_complete (type))))
   {
     case DDS_DYNAMIC_ENUMERATION:
-      type->ret = (bit_bound > 0 && bit_bound <= 32) ? ddsi_dynamic_type_set_bitbound (get_dtype_complete (type), bit_bound) : DDS_RETCODE_BAD_PARAMETER;
+      type->ret = (bit_bound > 0U && bit_bound <= 32U) ? ddsi_dynamic_type_set_bitbound (get_dtype_complete (type), bit_bound) : DDS_RETCODE_BAD_PARAMETER;
       break;
     case DDS_DYNAMIC_BITMASK:
-      type->ret = (bit_bound > 0 && bit_bound <= 64) ? ddsi_dynamic_type_set_bitbound (get_dtype_complete (type), bit_bound) : DDS_RETCODE_BAD_PARAMETER;
+      type->ret = (bit_bound > 0U && bit_bound <= 64U) ? ddsi_dynamic_type_set_bitbound (get_dtype_complete (type), bit_bound) : DDS_RETCODE_BAD_PARAMETER;
       break;
     default:
       type->ret = DDS_RETCODE_BAD_PARAMETER;

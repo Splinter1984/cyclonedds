@@ -204,7 +204,7 @@ int32_t dds_handle_delete (struct dds_handle_link *link)
 #endif
   ddsrt_mutex_lock (&handles.lock);
   ddsrt_hh_remove_present (handles.ht, link);
-  assert (handles.count > 0);
+  assert (handles.count > 0U);
   handles.count--;
   ddsrt_mutex_unlock (&handles.lock);
   return DDS_RETCODE_OK;
@@ -333,7 +333,7 @@ int32_t dds_handle_pin_for_delete (dds_handle_t hdl, bool explicit, bool from_us
         }
         else
         {
-          assert ((cf & HDL_REFCOUNT_MASK) > 0);
+          assert ((cf & HDL_REFCOUNT_MASK) > 0U);
           if ((cf & HDL_REFCOUNT_MASK) == HDL_REFCOUNT_UNIT)
           {
             /* Last reference is closing. Pin entity and indicate that it is closing. */
@@ -357,7 +357,7 @@ int32_t dds_handle_pin_for_delete (dds_handle_t hdl, bool explicit, bool from_us
         /* Implicit call to dds_delete (child invoking delete on its parent) */
         if (cf & HDL_FLAG_IMPLICIT)
         {
-          assert ((cf & HDL_REFCOUNT_MASK) > 0);
+          assert ((cf & HDL_REFCOUNT_MASK) > 0U);
           if ((cf & HDL_REFCOUNT_MASK) == HDL_REFCOUNT_UNIT)
           {
             /* Last reference is closing. Pin entity and indicate that it is closing. */
@@ -383,7 +383,7 @@ int32_t dds_handle_pin_for_delete (dds_handle_t hdl, bool explicit, bool from_us
         }
       }
 
-      rc = ((cf1 & HDL_REFCOUNT_MASK) == 0 || (cf1 & HDL_FLAG_ALLOW_CHILDREN)) ? DDS_RETCODE_OK : DDS_RETCODE_TRY_AGAIN;
+      rc = ((cf1 & HDL_REFCOUNT_MASK) == 0U || (cf1 & HDL_FLAG_ALLOW_CHILDREN)) ? DDS_RETCODE_OK : DDS_RETCODE_TRY_AGAIN;
     } while (!ddsrt_atomic_cas32 (&(*link)->cnt_flags, cf, cf1));
   }
   ddsrt_mutex_unlock (&handles.lock);
@@ -401,7 +401,7 @@ bool dds_handle_drop_childref_and_pin (struct dds_handle_link *link, bool may_de
     if (cf & (HDL_FLAG_CLOSING | HDL_FLAG_PENDING))
     {
       /* Only one can succeed; child ref still to be removed */
-      assert ((cf & HDL_REFCOUNT_MASK) > 0);
+      assert ((cf & HDL_REFCOUNT_MASK) > 0U);
       cf1 = (cf - HDL_REFCOUNT_UNIT);
       del_parent = false;
     }
@@ -417,7 +417,7 @@ bool dds_handle_drop_childref_and_pin (struct dds_handle_link *link, bool may_de
         }
         else
         {
-          assert ((cf & HDL_REFCOUNT_MASK) > 0);
+          assert ((cf & HDL_REFCOUNT_MASK) > 0U);
           cf1 = (cf - HDL_REFCOUNT_UNIT);
           del_parent = false;
         }
@@ -425,7 +425,7 @@ bool dds_handle_drop_childref_and_pin (struct dds_handle_link *link, bool may_de
       else
       {
         /* Child can't delete an explicit parent; child ref still to be removed */
-        assert ((cf & HDL_REFCOUNT_MASK) > 0);
+        assert ((cf & HDL_REFCOUNT_MASK) > 0U);
         cf1 = (cf - HDL_REFCOUNT_UNIT);
         del_parent = false;
       }
@@ -473,7 +473,7 @@ bool dds_handle_drop_ref (struct dds_handle_link *link)
   uint32_t old, new;
   do {
     old = ddsrt_atomic_ld32 (&link->cnt_flags);
-    assert ((old & HDL_REFCOUNT_MASK) > 0);
+    assert ((old & HDL_REFCOUNT_MASK) > 0U);
     new = old - HDL_REFCOUNT_UNIT;
   } while (!ddsrt_atomic_cas32 (&link->cnt_flags, old, new));
   ddsrt_mutex_lock (&handles.lock);
@@ -482,7 +482,7 @@ bool dds_handle_drop_ref (struct dds_handle_link *link)
     ddsrt_cond_broadcast (&handles.cond);
   }
   ddsrt_mutex_unlock (&handles.lock);
-  return ((new & HDL_REFCOUNT_MASK) == 0);
+  return ((new & HDL_REFCOUNT_MASK) == 0U);
 }
 
 bool dds_handle_unpin_and_drop_ref (struct dds_handle_link *link)
@@ -490,8 +490,8 @@ bool dds_handle_unpin_and_drop_ref (struct dds_handle_link *link)
   uint32_t old, new;
   do {
     old = ddsrt_atomic_ld32 (&link->cnt_flags);
-    assert ((old & HDL_REFCOUNT_MASK) > 0);
-    assert ((old & HDL_PINCOUNT_MASK) > 0);
+    assert ((old & HDL_REFCOUNT_MASK) > 0U);
+    assert ((old & HDL_PINCOUNT_MASK) > 0U);
     new = old - HDL_REFCOUNT_UNIT - 1u;
   } while (!ddsrt_atomic_cas32 (&link->cnt_flags, old, new));
   ddsrt_mutex_lock (&handles.lock);
@@ -500,13 +500,13 @@ bool dds_handle_unpin_and_drop_ref (struct dds_handle_link *link)
     ddsrt_cond_broadcast (&handles.cond);
   }
   ddsrt_mutex_unlock (&handles.lock);
-  return ((new & HDL_REFCOUNT_MASK) == 0);
+  return ((new & HDL_REFCOUNT_MASK) == 0U);
 }
 
 bool dds_handle_close (struct dds_handle_link *link)
 {
   uint32_t old = ddsrt_atomic_or32_ov (&link->cnt_flags, HDL_FLAG_CLOSING);
-  return (old & HDL_REFCOUNT_MASK) == 0;
+  return (old & HDL_REFCOUNT_MASK) == 0U;
 }
 
 void dds_handle_close_wait (struct dds_handle_link *link)
@@ -525,7 +525,7 @@ void dds_handle_close_wait (struct dds_handle_link *link)
 
 bool dds_handle_is_not_refd (struct dds_handle_link *link)
 {
-  return ((ddsrt_atomic_ld32 (&link->cnt_flags) & HDL_REFCOUNT_MASK) == 0);
+  return ((ddsrt_atomic_ld32 (&link->cnt_flags) & HDL_REFCOUNT_MASK) == 0U);
 }
 
 extern inline bool dds_handle_is_closed (struct dds_handle_link *link);

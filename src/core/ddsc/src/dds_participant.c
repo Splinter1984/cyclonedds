@@ -177,7 +177,7 @@ dds_return_t dds_lookup_participant (dds_domainid_t domain_id, dds_entity_t *par
 {
   dds_return_t ret;
 
-  if ((participants != NULL && (size == 0 || size >= INT32_MAX)) || (participants == NULL && size != 0))
+  if ((participants != NULL && (size == 0U || size >= INT32_MAX)) || (participants == NULL && size != 0U))
     return DDS_RETCODE_BAD_PARAMETER;
 
   if (participants)

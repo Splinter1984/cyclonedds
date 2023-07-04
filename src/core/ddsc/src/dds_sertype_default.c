@@ -46,13 +46,13 @@ static bool sertype_default_equal (const struct ddsi_sertype *acmn, const struct
   if (a->type.keys.nkeys != b->type.keys.nkeys)
     return false;
   if (
-    (a->type.keys.nkeys > 0) &&
+    (a->type.keys.nkeys > 0U) &&
     memcmp (a->type.keys.keys, b->type.keys.keys, a->type.keys.nkeys * sizeof (*a->type.keys.keys)) != 0)
     return false;
   if (a->type.ops.nops != b->type.ops.nops)
     return false;
   if (
-    (a->type.ops.nops > 0) &&
+    (a->type.ops.nops > 0U) &&
     memcmp (a->type.ops.ops, b->type.ops.ops, a->type.ops.nops * sizeof (*a->type.ops.ops)) != 0)
     return false;
   assert (a->type.opt_size_xcdr1 == b->type.opt_size_xcdr1);
@@ -150,12 +150,12 @@ static bool type_may_contain_ptr (const struct dds_sertype_default *tp)
      dds_stream_free_sample for each sample. */
   /* TODO: improve this check so that it only returns true in case the type
      really contains a pointer, by inspection of the serializer ops */
-  return tp->type.opt_size_xcdr1 == 0 || tp->type.opt_size_xcdr2 == 0;
+  return tp->type.opt_size_xcdr1 == 0U || tp->type.opt_size_xcdr2 == 0U;
 }
 
 static void sertype_default_free_samples (const struct ddsi_sertype *sertype_common, void **ptrs, size_t count, dds_free_op_t op)
 {
-  if (count > 0)
+  if (count > 0U)
   {
     const struct dds_sertype_default *tp = (const struct dds_sertype_default *)sertype_common;
     const struct dds_cdrstream_desc *type = &tp->type;
@@ -296,7 +296,7 @@ dds_return_t dds_sertype_default_init (const struct dds_domain *domain, struct d
   if (!dds_stream_extensibility (desc->m_ops, &type_ext))
     return DDS_RETCODE_BAD_PARAMETER;
 
-  ddsi_sertype_init (&st->c, desc->m_typename, &dds_sertype_ops_default, serdata_ops, (desc->m_nkeys == 0));
+  ddsi_sertype_init (&st->c, desc->m_typename, &dds_sertype_ops_default, serdata_ops, (desc->m_nkeys == 0U));
 #ifdef DDS_HAS_SHM
   st->c.iox_size = desc->m_size;
 #endif
@@ -332,8 +332,8 @@ dds_return_t dds_sertype_default_init (const struct dds_domain *domain, struct d
 
   if (desc->m_flagset & DDS_TOPIC_XTYPES_METADATA)
   {
-    if (desc->type_information.sz == 0 || desc->type_information.data == NULL
-      || desc->type_mapping.sz == 0 || desc->type_mapping.data == NULL)
+    if (desc->type_information.sz == 0U || desc->type_information.data == NULL
+      || desc->type_mapping.sz == 0U || desc->type_mapping.data == NULL)
     {
       ddsi_sertype_unref (&st->c);
       GVTRACE ("Flag DDS_TOPIC_XTYPES_METADATA set for type %s but topic descriptor does not contains type information\n", desc->m_typename);
@@ -353,11 +353,11 @@ dds_return_t dds_sertype_default_init (const struct dds_domain *domain, struct d
   }
 
   st->type.opt_size_xcdr1 = (st->c.allowed_data_representation & DDS_DATA_REPRESENTATION_FLAG_XCDR1) ? dds_stream_check_optimize (&st->type, DDSI_RTPS_CDR_ENC_VERSION_1) : 0;
-  if (st->type.opt_size_xcdr1 > 0)
+  if (st->type.opt_size_xcdr1 > 0U)
     GVTRACE ("Marshalling XCDR1 for type: %s is %soptimised\n", st->c.type_name, st->type.opt_size_xcdr1 ? "" : "not ");
 
   st->type.opt_size_xcdr2 = (st->c.allowed_data_representation & DDS_DATA_REPRESENTATION_FLAG_XCDR2) ? dds_stream_check_optimize (&st->type, DDSI_RTPS_CDR_ENC_VERSION_2) : 0;
-  if (st->type.opt_size_xcdr2 > 0)
+  if (st->type.opt_size_xcdr2 > 0U)
     GVTRACE ("Marshalling XCDR2 for type: %s is %soptimised\n", st->c.type_name, st->type.opt_size_xcdr2 ? "" : "not ");
 
   return DDS_RETCODE_OK;

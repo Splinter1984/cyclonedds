@@ -86,18 +86,18 @@ struct dds_serdata_default_unpadded {
 };
 
 #ifdef __GNUC__
-#define DDS_SERDATA_DEFAULT_PAD(n) ((n) % 8)
+#define DDS_SERDATA_DEFAULT_PAD(n) ((n) % 8U)
 #else
 #define DDS_SERDATA_DEFAULT_PAD(n) (n)
 #endif
 
 struct dds_serdata_default {
   DDS_SERDATA_DEFAULT_PREPAD;
-  char pad[DDS_SERDATA_DEFAULT_PAD (8 - (offsetof (struct dds_serdata_default_unpadded, data) % 8))];
+  char pad[DDS_SERDATA_DEFAULT_PAD (8U - (offsetof (struct dds_serdata_default_unpadded, data) % 8U))];
   DDS_SERDATA_DEFAULT_POSTPAD;
 };
 
-DDSRT_STATIC_ASSERT ((offsetof (struct dds_serdata_default, data) % 8) == 0);
+DDSRT_STATIC_ASSERT ((offsetof (struct dds_serdata_default, data) % 8U) == 0U);
 
 #undef DDS_SERDATA_DEFAULT_PAD
 #undef DDS_SERDATA_DEFAULT_POSTPAD

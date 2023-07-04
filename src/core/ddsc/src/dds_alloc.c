@@ -54,7 +54,7 @@ void dds_free (void * ptr)
 
 char * dds_string_alloc (size_t size)
 {
-  return (char*) dds_alloc (size + 1);
+  return (char*) dds_alloc (size + 1U);
 }
 
 char * dds_string_dup (const char * str)
@@ -62,7 +62,7 @@ char * dds_string_dup (const char * str)
   char * ret = NULL;
   if (str)
   {
-    size_t sz = strlen (str) + 1;
+    size_t sz = strlen (str) + 1U;
     ret = dds_alloc (sz);
     memcpy (ret, str, sz);
   }

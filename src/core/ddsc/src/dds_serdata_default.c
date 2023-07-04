@@ -72,7 +72,7 @@ void dds_serdatapool_free (struct dds_serdatapool * pool)
 
 static size_t alignup_size (size_t x, size_t a)
 {
-  size_t m = a-1;
+  size_t m = a-1U;
   assert (ispowerof2_size (a));
   return (x+m) & ~m;
 }
@@ -106,7 +106,7 @@ static const unsigned char *serdata_default_keybuf(const struct dds_serdata_defa
 
 static struct ddsi_serdata *fix_serdata_default(struct dds_serdata_default *d, uint32_t basehash)
 {
-  assert (d->key.keysize > 0); // we use a different function for implementing the keyless case
+  assert (d->key.keysize > 0U); // we use a different function for implementing the keyless case
   d->c.hash = ddsrt_mh3 (serdata_default_keybuf(d), d->key.keysize, basehash); // FIXME: or the full buffer, regardless of actual size?
   return &d->c;
 }
@@ -140,7 +140,7 @@ static bool serdata_default_eqkey_nokey (const struct ddsi_serdata *acmn, const 
 static void serdata_default_free(struct ddsi_serdata *dcmn)
 {
   struct dds_serdata_default *d = (struct dds_serdata_default *)dcmn;
-  assert(ddsrt_atomic_ld32(&d->c.refc) == 0);
+  assert(ddsrt_atomic_ld32(&d->c.refc) == 0U);
 
   if (d->key.buftype == KEYBUFTYPE_DYNALLOC)
     ddsrt_free(d->key.u.dynbuf);
@@ -223,7 +223,7 @@ static bool gen_serdata_key (const struct dds_sertype_default *type, struct dds_
   const struct dds_cdrstream_desc *desc = &type->type;
   struct dds_istream *is = NULL;
   kh->buftype = KEYBUFTYPE_UNSET;
-  if (desc->keys.nkeys == 0)
+  if (desc->keys.nkeys == 0U)
   {
     kh->buftype = KEYBUFTYPE_STATIC;
     kh->keysize = 0;
@@ -306,7 +306,7 @@ static struct dds_serdata_default *serdata_default_from_ser_common (const struct
 
   uint32_t off = 4; /* must skip the CDR header */
 
-  assert (fragchain->min == 0);
+  assert (fragchain->min == 0U);
   assert (fragchain->maxp1 >= off); /* CDR header must be in first fragment */
 
   memcpy (&d->hdr, DDSI_RMSG_PAYLOADOFF (fragchain->rmsg, DDSI_RDATA_PAYLOAD_OFF (fragchain)), sizeof (d->hdr));
@@ -367,8 +367,8 @@ static struct dds_serdata_default *serdata_default_from_ser_iov_common (const st
      serdata */
   if (size > UINT32_MAX - offsetof (struct dds_serdata_default, hdr))
     return NULL;
-  assert (niov >= 1);
-  if (iov[0].iov_len < 4) /* CDR header */
+  assert (niov >= 1U);
+  if (iov[0].iov_len < 4U) /* CDR header */
     return NULL;
   struct dds_serdata_default *d = serdata_default_new_size (tp, kind, (uint32_t) size, DDSI_RTPS_CDR_ENC_VERSION_UNDEF);
   if (d == NULL)
@@ -377,13 +377,13 @@ static struct dds_serdata_default *serdata_default_from_ser_iov_common (const st
   memcpy (&d->hdr, iov[0].iov_base, sizeof (d->hdr));
   if (!is_valid_xcdr_id (d->hdr.identifier))
     goto err;
-  serdata_default_append_blob (&d, iov[0].iov_len - 4, (const char *) iov[0].iov_base + 4);
+  serdata_default_append_blob (&d, iov[0].iov_len - 4U, (const char *) iov[0].iov_base + 4);
   for (ddsrt_msg_iovlen_t i = 1; i < niov; i++)
     serdata_default_append_blob (&d, iov[i].iov_len, iov[i].iov_base);
 
   const bool needs_bswap = !DDSI_RTPS_CDR_ENC_IS_NATIVE (d->hdr.identifier);
   d->hdr.identifier = DDSI_RTPS_CDR_ENC_TO_NATIVE (d->hdr.identifier);
-  const uint32_t pad = ddsrt_fromBE2u (d->hdr.options) & 2;
+  const uint32_t pad = ddsrt_fromBE2u (d->hdr.options) & 2U;
   const uint32_t xcdr_version = ddsi_sertype_enc_id_xcdr_version (d->hdr.identifier);
   const uint32_t encoding_format = ddsi_sertype_enc_id_enc_format (d->hdr.identifier);
   if (encoding_format != tp->encoding_format)
@@ -532,7 +532,7 @@ static void ostream_add_to_serdata_default (dds_ostream_t * __restrict s, struct
 {
   /* DDSI requires 4 byte alignment */
   const uint32_t pad = dds_cdr_alignto4_clear_and_resize (s, &dds_cdrstream_default_allocator, s->m_xcdr_version);
-  assert (pad <= 3);
+  assert (pad <= 3U);
 
   /* Reset data pointer as stream may have reallocated */
   (*d) = (void *) s->m_buffer;
@@ -573,7 +573,7 @@ static struct dds_serdata_default *serdata_default_from_sample_cdr_common (const
         // accordance with the XTypes spec.
         //
         // Those padding bytes are not part of the key!
-        assert (ddsrt_fromBE2u (d->hdr.options) < 4);
+        assert (ddsrt_fromBE2u (d->hdr.options) < 4U);
         d->key.keysize = (d->pos - ddsrt_fromBE2u (d->hdr.options)) & SERDATA_DEFAULT_KEYSIZE_MASK;
         d->key.u.dynbuf = (unsigned char *) d->data;
       }
@@ -805,7 +805,7 @@ static void serdata_default_get_keyhash (const struct ddsi_serdata *serdata_comm
   else
   {
     memset (buf->value, 0, DDS_FIXED_KEY_MAX_SIZE);
-    if (actual_keysz > 0)
+    if (actual_keysz > 0U)
       memcpy (buf->value, os.x.m_buffer, actual_keysz);
   }
   dds_ostreamBE_fini (&os, &dds_cdrstream_default_allocator);

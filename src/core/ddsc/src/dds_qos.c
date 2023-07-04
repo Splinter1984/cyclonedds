@@ -37,12 +37,12 @@ static bool dds_qos_data_copy_out (const ddsi_octetseq_t *data, void **value, si
     *sz = data->length;
   if (value)
   {
-    if (data->length == 0)
+    if (data->length == 0U)
       *value = NULL;
     else
     {
       assert (data->value);
-      *value = dds_alloc (data->length + 1);
+      *value = dds_alloc (data->length + 1U);
       memcpy (*value, data->value, data->length);
       ((char *) (*value))[data->length] = 0;
     }
@@ -98,12 +98,12 @@ bool dds_qos_equal (const dds_qos_t * __restrict a, const dds_qos_t * __restrict
   else if (a == NULL || b == NULL)
     return false;
   else
-    return ddsi_xqos_delta (a, b, ~(DDSI_QP_TYPE_INFORMATION)) == 0;
+    return ddsi_xqos_delta (a, b, ~(DDSI_QP_TYPE_INFORMATION)) == 0U;
 }
 
 void dds_qset_userdata (dds_qos_t * __restrict qos, const void * __restrict value, size_t sz)
 {
-  if (qos == NULL || (sz > 0 && value == NULL))
+  if (qos == NULL || (sz > 0U && value == NULL))
     return;
   dds_qos_data_copy_in (&qos->user_data, value, sz, qos->present & DDSI_QP_USER_DATA);
   qos->present |= DDSI_QP_USER_DATA;
@@ -111,7 +111,7 @@ void dds_qset_userdata (dds_qos_t * __restrict qos, const void * __restrict valu
 
 void dds_qset_topicdata (dds_qos_t * __restrict qos, const void * __restrict value, size_t sz)
 {
-  if (qos == NULL || (sz > 0 && value == NULL))
+  if (qos == NULL || (sz > 0U && value == NULL))
     return;
   dds_qos_data_copy_in (&qos->topic_data, value, sz, qos->present & DDSI_QP_TOPIC_DATA);
   qos->present |= DDSI_QP_TOPIC_DATA;
@@ -119,7 +119,7 @@ void dds_qset_topicdata (dds_qos_t * __restrict qos, const void * __restrict val
 
 void dds_qset_groupdata (dds_qos_t * __restrict qos, const void * __restrict value, size_t sz)
 {
-  if (qos == NULL || (sz > 0 && value == NULL))
+  if (qos == NULL || (sz > 0U && value == NULL))
     return;
   dds_qos_data_copy_in (&qos->group_data, value, sz, qos->present & DDSI_QP_GROUP_DATA);
   qos->present |= DDSI_QP_GROUP_DATA;
@@ -221,7 +221,7 @@ void dds_qset_time_based_filter (dds_qos_t * __restrict qos, dds_duration_t mini
 
 void dds_qset_partition (dds_qos_t * __restrict qos, uint32_t n, const char ** __restrict ps)
 {
-  if (qos == NULL || (n > 0 && ps == NULL))
+  if (qos == NULL || (n > 0U && ps == NULL))
     return;
   if (qos->present & DDSI_QP_PARTITION)
   {
@@ -230,7 +230,7 @@ void dds_qset_partition (dds_qos_t * __restrict qos, uint32_t n, const char ** _
     ddsrt_free (qos->partition.strs);
   }
   qos->partition.n = n;
-  if (qos->partition.n == 0)
+  if (qos->partition.n == 0U)
     qos->partition.strs = NULL;
   else
   {
@@ -354,19 +354,19 @@ DDS_QPROP_GET_INDEX (bprop, binary_value)
 void dds_qunset_##prop_type_ (dds_qos_t * __restrict qos, const char * name) \
 { \
   uint32_t i; \
-  if (qos == NULL || !(qos->present & DDSI_QP_PROPERTY_LIST) || qos->property.prop_field_.n == 0 || name == NULL) \
+  if (qos == NULL || !(qos->present & DDSI_QP_PROPERTY_LIST) || qos->property.prop_field_.n == 0U || name == NULL) \
     return; \
   if (dds_q##prop_type_##_get_index (qos, name, &i)) \
   { \
     dds_free (qos->property.prop_field_.props[i].name); \
     dds_free (qos->property.prop_field_.props[i].value_field_); \
-    if (qos->property.prop_field_.n > 1) \
+    if (qos->property.prop_field_.n > 1U) \
     { \
-      if (i < (qos->property.prop_field_.n - 1)) \
-        memmove (qos->property.prop_field_.props + i, qos->property.prop_field_.props + i + 1, \
-          (qos->property.prop_field_.n - i - 1) * sizeof (*qos->property.prop_field_.props)); \
+      if (i < (qos->property.prop_field_.n - 1U)) \
+        memmove (qos->property.prop_field_.props + i, qos->property.prop_field_.props + i + 1U, \
+          (qos->property.prop_field_.n - i - 1U) * sizeof (*qos->property.prop_field_.props)); \
       qos->property.prop_field_.props = dds_realloc (qos->property.prop_field_.props, \
-        (qos->property.prop_field_.n - 1) * sizeof (*qos->property.prop_field_.props)); \
+        (qos->property.prop_field_.n - 1U) * sizeof (*qos->property.prop_field_.props)); \
     } \
     else \
     { \
@@ -395,7 +395,7 @@ void dds_qset_prop (dds_qos_t * __restrict qos, const char * name, const char * 
   else
   {
     qos->property.value.props = dds_realloc (qos->property.value.props,
-      (qos->property.value.n + 1) * sizeof (*qos->property.value.props));
+      (qos->property.value.n + 1U) * sizeof (*qos->property.value.props));
     qos->property.value.props[qos->property.value.n].propagate = 0;
     qos->property.value.props[qos->property.value.n].name = dds_string_dup (name);
     qos->property.value.props[qos->property.value.n].value = dds_string_dup (value);
@@ -406,7 +406,7 @@ void dds_qset_prop (dds_qos_t * __restrict qos, const char * name, const char * 
 void dds_qset_bprop (dds_qos_t * __restrict qos, const char * name, const void * value, const size_t sz)
 {
   uint32_t i;
-  if (qos == NULL || name == NULL || (value == NULL && sz > 0))
+  if (qos == NULL || name == NULL || (value == NULL && sz > 0U))
     return;
 
   dds_qprop_init (qos);
@@ -418,7 +418,7 @@ void dds_qset_bprop (dds_qos_t * __restrict qos, const char * name, const void *
   else
   {
     qos->property.binary_value.props = dds_realloc (qos->property.binary_value.props,
-      (qos->property.binary_value.n + 1) * sizeof (*qos->property.binary_value.props));
+      (qos->property.binary_value.n + 1U) * sizeof (*qos->property.binary_value.props));
     qos->property.binary_value.props[qos->property.binary_value.n].propagate = 0;
     qos->property.binary_value.props[qos->property.binary_value.n].name = dds_string_dup (name);
     dds_qos_data_copy_in (&qos->property.binary_value.props[qos->property.binary_value.n].value, value, sz, false);
@@ -470,7 +470,7 @@ void dds_qset_data_representation (dds_qos_t * __restrict qos, uint32_t n, const
     {
       qos->data_representation.value.n++;
       qos->data_representation.value.ids = dds_realloc (qos->data_representation.value.ids, qos->data_representation.value.n * sizeof (*qos->data_representation.value.ids));
-      qos->data_representation.value.ids[qos->data_representation.value.n - 1] = values[x];
+      qos->data_representation.value.ids[qos->data_representation.value.n - 1U] = values[x];
     }
   }
   qos->present |= DDSI_QP_DATA_REPRESENTATION;
@@ -618,7 +618,7 @@ bool dds_qget_partition (const dds_qos_t * __restrict qos, uint32_t *n, char ***
     *n = qos->partition.n;
   if (ps)
   {
-    if (qos->partition.n == 0)
+    if (qos->partition.n == 0U)
       *ps = NULL;
     else
     {
@@ -722,7 +722,7 @@ bool dds_qget_##prop_type_##names (const dds_qos_t * __restrict qos, uint32_t * 
   bool props; \
   if (qos == NULL || (n == NULL && names == NULL)) \
     return false; \
-  props = (qos->present & DDSI_QP_PROPERTY_LIST) && qos->property.prop_field_.n > 0; \
+  props = (qos->present & DDSI_QP_PROPERTY_LIST) && qos->property.prop_field_.n > 0U; \
   if (n != NULL) \
     *n = props ? qos->property.prop_field_.n : 0; \
   if (names != NULL) \
@@ -805,12 +805,12 @@ bool dds_qget_data_representation (const dds_qos_t * __restrict qos, uint32_t *n
     return false;
   if (n == NULL)
     return false;
-  if (qos->data_representation.value.n > 0)
+  if (qos->data_representation.value.n > 0U)
     assert (qos->data_representation.value.ids != NULL);
   *n = qos->data_representation.value.n;
   if (values != NULL)
   {
-    if (qos->data_representation.value.n > 0)
+    if (qos->data_representation.value.n > 0U)
     {
       size_t sz = qos->data_representation.value.n * sizeof (*qos->data_representation.value.ids);
       *values = dds_alloc (sz);
@@ -829,7 +829,7 @@ dds_return_t dds_ensure_valid_data_representation (dds_qos_t *qos, uint32_t allo
   const bool allow1 = allowed_data_representations & DDS_DATA_REPRESENTATION_FLAG_XCDR1,
     allow2 = allowed_data_representations & DDS_DATA_REPRESENTATION_FLAG_XCDR2;
 
-  if ((qos->present & DDSI_QP_DATA_REPRESENTATION) && qos->data_representation.value.n > 0)
+  if ((qos->present & DDSI_QP_DATA_REPRESENTATION) && qos->data_representation.value.n > 0U)
   {
     assert (qos->data_representation.value.ids != NULL);
     for (uint32_t n = 0; n < qos->data_representation.value.n; n++)

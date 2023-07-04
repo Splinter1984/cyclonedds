@@ -135,7 +135,7 @@ static void sertype_builtin_realloc_samples (void **ptrs, const struct ddsi_sert
 
 static void sertype_builtin_free_samples (const struct ddsi_sertype *sertype_common, void **ptrs, size_t count, dds_free_op_t op)
 {
-  if (count > 0)
+  if (count > 0U)
   {
     const struct ddsi_sertype_builtintopic *tp = (const struct ddsi_sertype_builtintopic *)sertype_common;
     const size_t size = get_size (tp->entity_kind);

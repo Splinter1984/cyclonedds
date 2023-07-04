@@ -29,11 +29,11 @@ static bool is_triggered (struct dds_entity *e)
     case DDS_KIND_COND_QUERY:
     case DDS_KIND_COND_GUARD:
     case DDS_KIND_WAITSET:
-      t = ddsrt_atomic_ld32 (&e->m_status.m_trigger) != 0;
+      t = ddsrt_atomic_ld32 (&e->m_status.m_trigger) != 0U;
       break;
     default: {
       const uint32_t sm = ddsrt_atomic_ld32 (&e->m_status.m_status_and_mask);
-      t = (sm & (sm >> SAM_ENABLED_SHIFT)) != 0;
+      t = (sm & (sm >> SAM_ENABLED_SHIFT)) != 0U;
       break;
     }
   }
@@ -45,7 +45,7 @@ static dds_return_t dds_waitset_wait_impl (dds_entity_t waitset, dds_attach_t *x
   dds_waitset *ws;
   dds_return_t ret;
 
-  if ((xs == NULL) != (nxs == 0))
+  if ((xs == NULL) != (nxs == 0U))
     return DDS_RETCODE_BAD_PARAMETER;
 
   /* Locking the waitset here will delay a possible deletion until it is
@@ -76,7 +76,7 @@ static dds_return_t dds_waitset_wait_impl (dds_entity_t waitset, dds_attach_t *x
   }
 
   /* Only wait/keep waiting when we have something to observe and there aren't any triggers yet. */
-  while (ws->nentities > 0 && ws->ntriggered == 0 && !dds_handle_is_closed (&ws->m_entity.m_hdllink))
+  while (ws->nentities > 0U && ws->ntriggered == 0U && !dds_handle_is_closed (&ws->m_entity.m_hdllink))
     if (!ddsrt_cond_waituntil (&ws->wait_cond, &ws->wait_lock, abstimeout))
       break;
 
@@ -101,7 +101,7 @@ static void dds_waitset_close (struct dds_entity *e)
 {
   dds_waitset *ws = (dds_waitset *) e;
   ddsrt_mutex_lock (&ws->wait_lock);
-  while (ws->nentities > 0)
+  while (ws->nentities > 0U)
   {
     dds_entity *observed;
     if (dds_entity_pin (ws->entities[0].handle, &observed) < 0)
@@ -116,7 +116,7 @@ static void dds_waitset_close (struct dds_entity *e)
       ddsrt_mutex_unlock (&ws->wait_lock);
       (void) dds_entity_observer_unregister (observed, ws, true);
       ddsrt_mutex_lock (&ws->wait_lock);
-      assert (ws->nentities == 0 || ws->entities[0].entity != observed);
+      assert (ws->nentities == 0U || ws->entities[0].entity != observed);
       dds_entity_unpin (observed);
     }
   }
@@ -246,14 +246,14 @@ static bool dds_waitset_attach_observer (struct dds_waitset *ws, struct dds_enti
 {
   struct dds_waitset_attach_observer_arg *arg = varg;
   ddsrt_mutex_lock (&ws->wait_lock);
-  ws->entities = ddsrt_realloc (ws->entities, (ws->nentities + 1) * sizeof (*ws->entities));
+  ws->entities = ddsrt_realloc (ws->entities, (ws->nentities + 1U) * sizeof (*ws->entities));
   ws->entities[ws->nentities].arg = arg->x;
   ws->entities[ws->nentities].entity = observed;
   ws->entities[ws->nentities].handle = observed->m_hdllink.hdl;
   ws->nentities++;
   if (is_triggered (observed))
   {
-    const size_t i = ws->nentities - 1;
+    const size_t i = ws->nentities - 1U;
     dds_attachment tmp = ws->entities[i];
     ws->entities[i] = ws->entities[ws->ntriggered];
     ws->entities[ws->ntriggered++] = tmp;
@@ -410,7 +410,7 @@ dds_return_t dds_waitset_set_trigger (dds_entity_t waitset, bool trigger)
     do {
       oldst = ddsrt_atomic_ld32 (&ent->m_status.m_trigger);
     } while (!ddsrt_atomic_cas32 (&ent->m_status.m_trigger, oldst, trigger));
-    if (oldst == 0 && trigger != 0)
+    if (oldst == 0U && trigger != false)
       dds_entity_observers_signal (ent, trigger);
     ddsrt_mutex_unlock (&ent->m_observers_lock);
     dds_entity_unpin (ent);
