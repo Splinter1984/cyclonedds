@@ -121,9 +121,9 @@ static dds_handle_t dds_handle_create_int (struct dds_handle_link *link, bool im
 {
   uint32_t flags = HDL_FLAG_PENDING;
   flags |= implicit ? HDL_FLAG_IMPLICIT : HDL_REFCOUNT_UNIT;
-  flags |= refc_counts_children ? HDL_FLAG_ALLOW_CHILDREN : 0u;
-  flags |= user_access ? 0u : HDL_FLAG_NO_USER_ACCESS;
-  ddsrt_atomic_st32 (&link->cnt_flags, flags | 1u);
+  flags |= refc_counts_children ? HDL_FLAG_ALLOW_CHILDREN : 0U;
+  flags |= user_access ? 0U : HDL_FLAG_NO_USER_ACCESS;
+  ddsrt_atomic_st32 (&link->cnt_flags, flags | 1U);
   do {
     do {
       link->hdl = (int32_t) (ddsrt_random () & INT32_MAX);
@@ -165,7 +165,7 @@ dds_return_t dds_handle_register_special (struct dds_handle_link *link, bool imp
   else
   {
     handles.count++;
-    ddsrt_atomic_st32 (&link->cnt_flags, HDL_FLAG_PENDING | (implicit ? HDL_FLAG_IMPLICIT : HDL_REFCOUNT_UNIT) | (allow_children ? HDL_FLAG_ALLOW_CHILDREN : 0u) | 1u);
+    ddsrt_atomic_st32 (&link->cnt_flags, HDL_FLAG_PENDING | (implicit ? HDL_FLAG_IMPLICIT : HDL_REFCOUNT_UNIT) | (allow_children ? HDL_FLAG_ALLOW_CHILDREN : 0U) | 1U);
     link->hdl = handle;
     if (ddsrt_hh_add (handles.ht, link))
       ret = handle;

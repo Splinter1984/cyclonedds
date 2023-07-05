@@ -113,7 +113,7 @@ extern "C" {
  * @ingroup serialization
  * @brief Extract the DDS OP_TYPE from a uint32 as a \ref dds_stream_typecode
  */
-#define DDS_OP_TYPE(o)        ((enum dds_stream_typecode) (((o) & DDS_OP_TYPE_MASK) >> 16U))
+#define DDS_OP_TYPE(o)        ((enum dds_stream_typecode) (((o) & DDS_OP_TYPE_MASK) >> 16))
 
 /**
  * @anchor DDS_OP_TYPE_FLAGS
@@ -129,7 +129,7 @@ extern "C" {
  * @brief Extract the DDS OP_SUBTYPE from a uint32 as a \ref dds_stream_typecode
  * Used for collections, the OP_TYPE is array/sequence
  */
-#define DDS_OP_SUBTYPE(o)     ((enum dds_stream_typecode) (((o) & DDS_OP_SUBTYPE_MASK) >> 8U))
+#define DDS_OP_SUBTYPE(o)     ((enum dds_stream_typecode) (((o) & DDS_OP_SUBTYPE_MASK) >> 8))
 
 /**
  * @anchor DDS_OP_FLAGS
