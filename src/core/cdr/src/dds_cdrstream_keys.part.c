@@ -92,7 +92,7 @@ void dds_stream_write_keyBO (DDS_OSTREAM_T * __restrict os, const struct dds_cdr
     {
       case DDS_OP_KOF: {
         uint16_t n_offs = DDS_OP_LENGTH (*insnp);
-        assert (n_offs > 0);
+        assert (n_offs > 0U);
         dds_stream_write_keyBO_impl (os, allocator, desc->ops.ops + insnp[1], sample, --n_offs, insnp + 2);
         break;
       }
@@ -154,7 +154,7 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_adr (uint32_t insn, dd
            use the key index field from the key descriptors key list */
         key_offs[idx].src_off = is->m_index;
         key_offs[idx].op_off = ops;
-        assert (*keys_remaining > 0);
+        assert (*keys_remaining > 0U);
         (*keys_remaining)--;
       }
       else
@@ -196,7 +196,7 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_adr (uint32_t insn, dd
         {
           key_offs[n].src_off = is->m_index;
           key_offs[n].op_off = ops;
-          assert (*keys_remaining > 0);
+          assert (*keys_remaining > 0U);
           (*keys_remaining)--;
         }
       }
@@ -309,7 +309,7 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_pl (dds_istream_t * __
 
   /* skip all PLM-memberid pairs */
   while (ops[0] != DDS_OP_RTS)
-    ops += 2U;
+    ops += 2;
 
   return ops;
 }
@@ -392,7 +392,7 @@ void dds_stream_extract_keyBO_from_key (dds_istream_t * __restrict is, DDS_OSTRE
     {
       case DDS_OP_KOF: {
         uint16_t n_offs = DDS_OP_LENGTH (*op);
-        assert (n_offs > 0);
+        assert (n_offs > 0U);
         dds_stream_extract_keyBO_from_key_prim_op (is, os, allocator, desc->ops.ops + op[1], --n_offs, op + 2);
         break;
       }

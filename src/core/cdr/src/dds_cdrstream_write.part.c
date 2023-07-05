@@ -278,7 +278,7 @@ static const uint32_t *dds_stream_write_seqBO (DDS_OSTREAM_T * __restrict os, co
 
   /* write DHEADER */
   if (is_dheader_needed (subtype, xcdrv))
-    *((uint32_t *) (((struct dds_ostream *)os)->m_buffer + offs - 4)) = to_BO4u(((struct dds_ostream *)os)->m_index - offs);
+    *((uint32_t *) (((struct dds_ostream *)os)->m_buffer + offs - 4U)) = to_BO4u(((struct dds_ostream *)os)->m_index - offs);
 
   return ops;
 }
@@ -353,7 +353,7 @@ static const uint32_t *dds_stream_write_arrBO (DDS_OSTREAM_T * __restrict os, co
 
   /* write DHEADER */
   if (is_dheader_needed (subtype, xcdrv))
-    *((uint32_t *) (((struct dds_ostream *)os)->m_buffer + offs - 4)) = to_BO4u(((struct dds_ostream *)os)->m_index - offs);
+    *((uint32_t *) (((struct dds_ostream *)os)->m_buffer + offs - 4U)) = to_BO4u(((struct dds_ostream *)os)->m_index - offs);
 
   return ops;
 }
@@ -510,7 +510,7 @@ static const uint32_t *dds_stream_write_delimitedBO (DDS_OSTREAM_T * __restrict 
     return NULL;
 
   /* add dheader, which is the serialized size of the data */
-  *((uint32_t *) (os->x.m_buffer + offs - 4)) = to_BO4u (os->x.m_index - offs);
+  *((uint32_t *) (os->x.m_buffer + offs - 4U)) = to_BO4u (os->x.m_index - offs);
   return ops;
 }
 
@@ -534,7 +534,7 @@ static bool dds_stream_write_pl_memberBO (uint32_t mid, DDS_OSTREAM_T * __restri
   em_hdr |= lc << 28;
   em_hdr |= mid & EMHEADER_MEMBERID_MASK;
 
-  uint32_t *em_hdr_ptr = (uint32_t *) (os->x.m_buffer + data_offs - (lc == LENGTH_CODE_NEXTINT ? 8 : 4));
+  uint32_t *em_hdr_ptr = (uint32_t *) (os->x.m_buffer + data_offs - (lc == LENGTH_CODE_NEXTINT ? 8U : 4U));
   em_hdr_ptr[0] = to_BO4u (em_hdr);
   if (lc == LENGTH_CODE_NEXTINT)
     em_hdr_ptr[1] = to_BO4u (os->x.m_index - data_offs);  /* member size in next_int field in emheader */
@@ -588,7 +588,7 @@ static const uint32_t *dds_stream_write_plBO (DDS_OSTREAM_T * __restrict os, con
   ops = dds_stream_write_pl_memberlistBO (os, allocator, data, ops);
 
   /* write serialized size in dheader */
-  *((uint32_t *) (os->x.m_buffer + data_offs - 4)) = to_BO4u (os->x.m_index - data_offs);
+  *((uint32_t *) (os->x.m_buffer + data_offs - 4U)) = to_BO4u (os->x.m_index - data_offs);
   return ops;
 }
 
