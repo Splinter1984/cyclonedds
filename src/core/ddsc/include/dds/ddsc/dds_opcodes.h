@@ -615,7 +615,7 @@ enum dds_stream_typecode_subtype {
  * @ingroup topic_flags
  * @brief Max size of fixed key
  */
-#define DDS_FIXED_KEY_MAX_SIZE (16)
+#define DDS_FIXED_KEY_MAX_SIZE (16u)
 
 #if defined(__cplusplus)
 }

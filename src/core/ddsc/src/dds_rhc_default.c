@@ -2780,7 +2780,7 @@ static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_con
     n_nonempty_instances++;
     if (inst->isdisposed)
       n_not_alive_disposed++;
-    else if (inst->wrcount == 0)
+    else if (inst->wrcount == 0U)
       n_not_alive_no_writers++;
 
     if (inst->latest)
@@ -2815,7 +2815,7 @@ static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_con
 
     if (check_conds)
     {
-      if (check_qcmask && rhc->nqconds > 0)
+      if (check_qcmask && rhc->nqconds > 0U)
       {
         dds_querycond_mask_t qcmask;
         untyped_to_clean_invsample (rhc->type, inst->tk->m_sample, rhc->qcond_eval_samplebuf, 0, 0);
@@ -2848,12 +2848,12 @@ static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_con
         else
         {
           if (inst->inv_exists)
-            cond_match_count[i] += (qmask_of_invsample (inst) & rciter->m_qminv) == 0 && (inst->conds & rciter->m_query.m_qcmask) != 0;
+            cond_match_count[i] += (qmask_of_invsample (inst) & rciter->m_qminv) == 0U && (inst->conds & rciter->m_query.m_qcmask) != 0U;
           if (inst->latest)
           {
             struct rhc_sample *sample = inst->latest->next, * const end = sample;
             do {
-              cond_match_count[i] += ((qmask_of_sample (sample) & rciter->m_qminv) == 0 && (sample->conds & rciter->m_query.m_qcmask) != 0);
+              cond_match_count[i] += ((qmask_of_sample (sample) & rciter->m_qminv) == 0U && (sample->conds & rciter->m_query.m_qcmask) != 0U);
               sample = sample->next;
             } while (sample != end);
           }
@@ -2878,7 +2878,7 @@ static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_con
       assert (cond_match_count[i] == ddsrt_atomic_ld32 (&rciter->m_entity.m_status.m_trigger));
   }
 
-  if (rhc->n_nonempty_instances == 0)
+  if (rhc->n_nonempty_instances == 0U)
   {
     assert (ddsrt_circlist_isempty (&rhc->nonempty_instances));
   }

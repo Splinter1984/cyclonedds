@@ -94,10 +94,10 @@ ddsrt_strlcpy(
   /* strlcpy must return the number of bytes that (would) have been written,
      i.e. the length of src. */
   srclen = strlen(src);
-  if (size > 0) {
+  if (size > 0U) {
     size_t len = srclen;
     if (size <= srclen) {
-      len = size - 1;
+      len = size - 1U;
     }
     memcpy(dest, src, len);
     dest[len] = '\0';
@@ -128,9 +128,9 @@ ddsrt_strlcat(
   if (SIZE_MAX == destlen) {
     srclen = 0;
   } else if ((SIZE_MAX - destlen) <= srclen) {
-    srclen = (SIZE_MAX - destlen) - 1;
+    srclen = (SIZE_MAX - destlen) - 1UL;
   }
-  if (size > 0 && --size > destlen) {
+  if (size > 0U && --size > destlen) {
     size_t len = srclen;
     size -= destlen;
     if (size <= srclen) {
@@ -148,7 +148,7 @@ ddsrt_memdup(const void *src, size_t n)
 {
   void *dest = NULL;
 
-  if (n != 0 && (dest = ddsrt_malloc_s(n)) != NULL) {
+  if (n != 0U && (dest = ddsrt_malloc_s(n)) != NULL) {
     memcpy(dest, src, n);
   }
 
@@ -161,7 +161,7 @@ ddsrt_strdup(
 {
   assert(str != NULL);
 
-  return ddsrt_memdup(str, strlen(str) + 1);
+  return ddsrt_memdup(str, strlen(str) + 1U);
 }
 
 char *

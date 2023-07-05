@@ -62,11 +62,11 @@ ddsrt_ctime(dds_time_t abstime, char *str, size_t size)
   cnt = strftime(buf, sizeof(buf), fmt, &tm);
 #if ! __SunOS_5_6 && ! __MINGW32__
   /* %z is without a separator between hours and minutes, fixup */
-  assert(cnt == (sizeof(buf) - 2 /* ':' + '\0' */));
-  buf[sizeof(buf) - 1] = '\0';
-  buf[sizeof(buf) - 2] = buf[sizeof(buf) - 3];
-  buf[sizeof(buf) - 3] = buf[sizeof(buf) - 4];
-  buf[sizeof(buf) - 4] = ':';
+  assert(cnt == (sizeof(buf) - 2U /* ':' + '\0' */));
+  buf[sizeof(buf) - 1U] = '\0';
+  buf[sizeof(buf) - 2U] = buf[sizeof(buf) - 3U];
+  buf[sizeof(buf) - 3U] = buf[sizeof(buf) - 4U];
+  buf[sizeof(buf) - 4U] = ':';
 #endif
   (void)cnt;
 

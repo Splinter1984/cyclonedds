@@ -704,7 +704,7 @@ static int whcn_in_tlidx (const struct whc_impl *whc, const struct whc_idxnode *
 static size_t whcn_size (const struct whc_impl *whc, const struct dds_whc_default_node *whcn)
 {
   size_t sz = ddsi_serdata_size (whcn->serdata);
-  return sz + ((sz + whc->fragment_size - 1) / whc->fragment_size) * whc->sample_overhead;
+  return sz + ((sz + whc->fragment_size - 1U) / whc->fragment_size) * whc->sample_overhead;
 }
 
 static void whc_delete_one_intv (struct whc_impl *whc, struct whc_intvnode **p_intv, struct dds_whc_default_node **p_whcn)

@@ -724,7 +724,7 @@ bool dds_qget_##prop_type_##names (const dds_qos_t * __restrict qos, uint32_t * 
     return false; \
   props = (qos->present & DDSI_QP_PROPERTY_LIST) && qos->property.prop_field_.n > 0U; \
   if (n != NULL) \
-    *n = props ? qos->property.prop_field_.n : 0; \
+    *n = props ? qos->property.prop_field_.n : 0U; \
   if (names != NULL) \
   { \
     if (!props) \

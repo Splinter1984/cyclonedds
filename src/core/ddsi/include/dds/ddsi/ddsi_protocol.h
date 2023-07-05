@@ -122,10 +122,10 @@ typedef struct ddsi_rtps_info_src {
 #define DDSI_RTPS_PL_CDR2_BE  0x0a00u
 #define DDSI_RTPS_PL_CDR2_LE  0x0b00u
 
-#define DDSI_RTPS_CDR_ENC_LE(x) (((x) & 0x0100) == 0x0100)
+#define DDSI_RTPS_CDR_ENC_LE(x) (((x) & 0x0100U) == 0x0100U)
 #define DDSI_RTPS_CDR_ENC_IS_NATIVE(x) (DDSI_RTPS_CDR_ENC_LE ((x)))
-#define DDSI_RTPS_CDR_ENC_IS_VALID(x) (!((x) > DDSI_RTPS_PL_CDR2_LE || (x) == 0x0400 || (x) == 0x0500))
-#define DDSI_RTPS_CDR_ENC_TO_NATIVE(x) ((x) | 0x0100)
+#define DDSI_RTPS_CDR_ENC_IS_VALID(x) (!((x) > DDSI_RTPS_PL_CDR2_LE || (x) == 0x0400U || (x) == 0x0500U))
+#define DDSI_RTPS_CDR_ENC_TO_NATIVE(x) ((x) | 0x0100U)
 
 #else
 

@@ -132,7 +132,7 @@ ddsrt_thread_getname(char * __restrict name, size_t size)
 
   /* Thread identifier is used as fall back if thread name lookup is not
      supported or the thread name is empty. */
-  if (cnt == 0) {
+  if (cnt == 0U) {
     ddsrt_tid_t tid = ddsrt_gettid();
     cnt = (size_t)snprintf(name, size, "%"PRIdTID, tid);
   }
@@ -295,7 +295,7 @@ ddsrt_thread_create (
     goto err;
   }
 
-  if (tattr.stackSize != 0)
+  if (tattr.stackSize != 0U)
   {
 #ifdef PTHREAD_STACK_MIN
     if (tattr.stackSize < (uint32_t)PTHREAD_STACK_MIN)
@@ -549,12 +549,12 @@ ddsrt_thread_getname_anythread (
   {
     if (c == ')')
       namelen = namepos;
-    if (namepos + 1 < size)
+    if (namepos + 1U < size)
       name[namepos++] = (char) c;
   }
   fclose (fp);
-  assert (size == 0 || namelen < size);
-  if (size > 0)
+  assert (size == 0U || namelen < size);
+  if (size > 0U)
     name[namelen] = 0;
   return DDS_RETCODE_OK;
 }

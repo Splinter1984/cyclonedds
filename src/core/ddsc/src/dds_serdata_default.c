@@ -35,15 +35,15 @@
    minimum-size (well, 4 bytes) samples as fast as possible over loopback
    while using large messages -- actually, it stands to reason that this would
    be the same as the WHC node pool size */
-#define MAX_POOL_SIZE 8192
-#define MAX_SIZE_FOR_POOL 256
-#define DEFAULT_NEW_SIZE 128
-#define CHUNK_SIZE 128
+#define MAX_POOL_SIZE 8192U
+#define MAX_SIZE_FOR_POOL 256U
+#define DEFAULT_NEW_SIZE 128U
+#define CHUNK_SIZE 128U
 
 #ifndef NDEBUG
 static int ispowerof2_size (size_t x)
 {
-  return x > 0 && !(x & (x-1));
+  return x > 0U && !(x & (x-1U));
 }
 #endif
 
@@ -450,7 +450,7 @@ static struct ddsi_serdata *serdata_default_from_keyhash_cdr (const struct ddsi_
       { .iov_base = (unsigned char[]) { 0,0,0,0 }, .iov_len = 4}, // big-endian, unspecified padding
       { .iov_base = (void *) keyhash->value, .iov_len = (ddsrt_iov_len_t) sizeof (*keyhash) }
     };
-    return serdata_default_from_ser_iov (tpcmn, SDK_KEY, 2, iovec, 4 + sizeof (*keyhash));
+    return serdata_default_from_ser_iov (tpcmn, SDK_KEY, 2, iovec, 4U + sizeof (*keyhash));
   }
 }
 

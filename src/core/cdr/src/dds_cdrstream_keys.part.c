@@ -139,8 +139,8 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_adr (uint32_t insn, dd
       jsr_ops++;
 
     /* only in case the ADR|EXT has the key flag set, pass the actual ostream, otherwise skip the EXT type by passing NULL for ostream */
-    (void) dds_stream_extract_keyBO_from_data1 (is, is_key ? os : NULL, allocator, ops_offs_idx + 1, ops_offs, op0, jsr_ops, jsr_ops, false, mutable_member_or_parent, n_keys, keys_remaining, keys, key_offs);
-    ops += jmp ? jmp : 3;
+    (void) dds_stream_extract_keyBO_from_data1 (is, is_key ? os : NULL, allocator, ops_offs_idx + 1U, ops_offs, op0, jsr_ops, jsr_ops, false, mutable_member_or_parent, n_keys, keys_remaining, keys, key_offs);
+    ops += jmp ? jmp : 3U;
   }
   else
   {
@@ -185,7 +185,7 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_adr (uint32_t insn, dd
             const uint32_t *kof_op = op0 + keys[n].ops_offs;
             assert (DDS_OP (*kof_op) == DDS_OP_KOF);
             uint16_t n_offs = DDS_OP_LENGTH (*kof_op);
-            if (n_offs == ops_offs_idx + 1 && !memcmp (&kof_op[1], ops_offs, n_offs * sizeof (kof_op[1])))
+            if (n_offs == ops_offs_idx + 1U && !memcmp (&kof_op[1], ops_offs, n_offs * sizeof (kof_op[1])))
             {
               found = true;
               break;
@@ -241,7 +241,7 @@ static bool dds_stream_extract_keyBO_from_data_pl_member (dds_istream_t * __rest
   uint32_t insn, ops_csr = 0;
   bool found = false;
 
-  while (*keys_remaining > 0 && !found && (insn = ops[ops_csr]) != DDS_OP_RTS)
+  while (*keys_remaining > 0U && !found && (insn = ops[ops_csr]) != DDS_OP_RTS)
   {
     assert (DDS_OP (insn) == DDS_OP_PLM);
     uint32_t flags = DDS_PLM_FLAGS (insn);
@@ -252,13 +252,13 @@ static bool dds_stream_extract_keyBO_from_data_pl_member (dds_istream_t * __rest
       plm_ops++; /* skip PLC to go to first PLM from base type */
       found = dds_stream_extract_keyBO_from_data_pl_member (is, os, allocator, m_id, ops_offs_idx, ops_offs, op0, op0_type, plm_ops, n_keys, keys_remaining, keys, key_offs);
     }
-    else if (ops[ops_csr + 1] == m_id)
+    else if (ops[ops_csr + 1U] == m_id)
     {
       (void) dds_stream_extract_keyBO_from_data1 (is, os, allocator, ops_offs_idx, ops_offs, op0, op0_type, plm_ops, true, true, n_keys, keys_remaining, keys, key_offs);
       found = true;
       break;
     }
-    ops_csr += 2;
+    ops_csr += 2U;
   }
   return found;
 }
@@ -290,7 +290,7 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_pl (dds_istream_t * __
         /* length is part of serialized data */
         msz = dds_is_peek4 (is);
         if (lc > LENGTH_CODE_ALSO_NEXTINT)
-          msz <<= (lc - 4);
+          msz <<= (lc - 4U);
         break;
       default:
         abort ();
@@ -303,13 +303,13 @@ static const uint32_t *dds_stream_extract_keyBO_from_data_pl (dds_istream_t * __
     {
       is->m_index += msz;
       if (lc >= LENGTH_CODE_ALSO_NEXTINT)
-        is->m_index += 4; /* length embedded in member does not include it's own 4 bytes */
+        is->m_index += 4U; /* length embedded in member does not include it's own 4 bytes */
     }
   }
 
   /* skip all PLM-memberid pairs */
   while (ops[0] != DDS_OP_RTS)
-    ops += 2;
+    ops += 2U;
 
   return ops;
 }
@@ -348,10 +348,10 @@ bool dds_stream_extract_keyBO_from_data (dds_istream_t * __restrict is, DDS_OSTR
 {
   bool ret = true;
   uint32_t keys_remaining = desc->keys.nkeys;
-  if (keys_remaining == 0)
+  if (keys_remaining == 0U)
     return ret;
 
-#define MAX_ST_KEYS 16
+#define MAX_ST_KEYS 16U
   struct key_off_info st_key_offs[MAX_ST_KEYS];
   struct key_off_info * const key_offs =
     (desc->keys.nkeys <= MAX_ST_KEYS) ? st_key_offs : allocator->malloc (desc->keys.nkeys * sizeof (*key_offs));
@@ -359,7 +359,7 @@ bool dds_stream_extract_keyBO_from_data (dds_istream_t * __restrict is, DDS_OSTR
 
   uint32_t *ops = desc->ops.ops, *op0 = ops, *op0_type = ops;
   (void) dds_stream_extract_keyBO_from_data1 (is, os, allocator, 0, ops_offs, op0, op0_type, ops, false, false, desc->keys.nkeys, &keys_remaining, desc->keys.keys, key_offs);
-  if (keys_remaining > 0)
+  if (keys_remaining > 0U)
   {
     /* FIXME: stream_normalize should check for missing keys by implementing the
        must_understand annotation, so the check keys_remaining > 0 can become an assert. */

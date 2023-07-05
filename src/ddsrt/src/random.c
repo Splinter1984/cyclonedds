@@ -94,7 +94,7 @@ static void init_by_array (ddsrt_prng_t *prng, const uint32_t init_key[], size_t
   uint32_t i, j, k;
   init_genrand (prng, 19650218U);
   i = 1; j = 0;
-  k = (N > key_length ? N : (uint32_t) key_length);
+  k = (N > key_length ? (uint32_t) N : (uint32_t) key_length);
   for (; k; k--)
   {
     prng->mt[i] = (prng->mt[i] ^ ((prng->mt[i-1] ^ (prng->mt[i-1] >> 30)) * 1664525U)) + init_key[j] + j; /* non linear */

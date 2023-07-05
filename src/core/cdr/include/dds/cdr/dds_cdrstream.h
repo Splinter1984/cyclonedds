@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-#define DDS_CDRSTREAM_MAX_NESTING_DEPTH 32  /* maximum level of nesting for key extraction */
+#define DDS_CDRSTREAM_MAX_NESTING_DEPTH 32u  /* maximum level of nesting for key extraction */
 
 /*
   Encoding version to be used for serialization. Encoding version 1

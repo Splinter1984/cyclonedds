@@ -292,20 +292,20 @@ static bool qq_isidentcont (int x)
 
 static char *unescape_into_utf8 (char *dst, unsigned cp)
 {
-  if (cp < 0x80) {
+  if (cp < 0x80U) {
     *dst++ = (char) cp;
-  } else if (cp <= 0x7ff) {
-    *dst++ = (char) ((cp >> 6) + 0xc0);
-    *dst++ = (char) ((cp & 0x3f) + 0x80);
-  } else if (cp <= 0xffff) {
-    *dst++ = (char) ((cp >> 12) + 0xe0);
-    *dst++ = (char) (((cp >> 6) & 0x3f) + 0x80);
-    *dst++ = (char) ((cp & 0x3f) + 0x80);
-  } else if (cp <= 0x10ffff) {
-    *dst++ = (char) ((cp >> 18) + 0xf0);
-    *dst++ = (char) (((cp >> 12) & 0x3f) + 0x80);
-    *dst++ = (char) (((cp >> 6) & 0x3f) + 0x80);
-    *dst++ = (char) ((cp & 0x3f) + 0x80);
+  } else if (cp <= 0x7ffU) {
+    *dst++ = (char) ((cp >> 6) + 0xc0U);
+    *dst++ = (char) ((cp & 0x3fU) + 0x80U);
+  } else if (cp <= 0xffffU) {
+    *dst++ = (char) ((cp >> 12) + 0xe0U);
+    *dst++ = (char) (((cp >> 6) & 0x3fU) + 0x80U);
+    *dst++ = (char) ((cp & 0x3fU) + 0x80U);
+  } else if (cp <= 0x10ffffU) {
+    *dst++ = (char) ((cp >> 18) + 0xf0U);
+    *dst++ = (char) (((cp >> 12) & 0x3fU) + 0x80U);
+    *dst++ = (char) (((cp >> 6) & 0x3fU) + 0x80U);
+    *dst++ = (char) ((cp & 0x3fU) + 0x80U);
   } else {
     dst = NULL;
   }
@@ -394,7 +394,7 @@ static int append_to_payload (struct ddsrt_xmlp_state *st, int c, int islit)
     st->tpescp = st->tpp;
   }
   if (st->tpp == st->tpsz) {
-    st->tpsz += 1024;
+    st->tpsz += 1024U;
     st->tp = ddsrt_realloc (st->tp, st->tpsz);
   }
   return 0;
@@ -413,25 +413,25 @@ static int save_payload (char **payload, struct ddsrt_xmlp_state *st, int trim)
   }
   if (payload == NULL) {
     p = NULL;
-  } else if (st->tpp == 0) {
+  } else if (st->tpp == 0U) {
     p = ddsrt_strdup("");
   } else {
-    size_t first = 0, last = st->tpp - 1;
+    size_t first = 0, last = st->tpp - 1U;
     if (trim) {
       while (first <= last && qq_isspace (st->tp[first])) {
         first++;
       }
-      while (first <= last && qq_isspace (st->tp[last]) && last > 0) {
+      while (first <= last && qq_isspace (st->tp[last]) && last > 0U) {
         last--;
       }
     }
     if (first > last) {
       p = ddsrt_strdup("");
     } else {
-      p = ddsrt_malloc (last - first + 2);
+      p = ddsrt_malloc (last - first + 2U);
       /* Could be improved, parser error will be "invalid char sequence" if malloc fails. */
-      memcpy (p, st->tp + first, last - first + 1);
-      p[last - first + 1] = 0;
+      memcpy (p, st->tp + first, last - first + 1U);
+      p[last - first + 1U] = 0;
     }
   }
   discard_payload (st);
@@ -580,7 +580,7 @@ static int next_token (struct ddsrt_xmlp_state *st, char **payload)
            and this has caused people trouble several times already */
         (void) next_char (st); (void) next_char (st);
         const unsigned char c = (unsigned char) next_char (st);
-        const unsigned char endm[4] = { 0xe2, 0x80, (unsigned char) (c + 1), 0 };
+        const unsigned char endm[4] = { 0xe2, 0x80, (unsigned char) (c + 1U), 0 };
         tok = next_token_string (st, payload, (const char *) endm);
       } else if (qq_isidentfirst (n)) {
         tok = next_token_ident (st, payload);
@@ -687,7 +687,7 @@ static int parse_element (struct ddsrt_xmlp_state *st, uintptr_t parentinfo)
             }
           }
           /* then, if the markup is a comment, skip it and try again */
-        } while ((peek_char (st) != '<' || (cmt = skip_comment (st)) > 0) && make_chars_available (st, sizeof(cdata_magic) - 1));
+        } while ((peek_char (st) != '<' || (cmt = skip_comment (st)) > 0) && make_chars_available (st, sizeof(cdata_magic) - 1UL));
         if (cmt == TOK_ERROR) {
           discard_payload (st);
           PE_LOCAL_ERROR ("invalid comment", 0);

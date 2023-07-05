@@ -28,7 +28,7 @@ typedef char * (*expand_fn)(const char *src0, expand_lookup_fn lookup, void * da
 
 static void errorN (size_t n0, const char *s, const char *msg)
 {
-    const int n = (n0 > 100) ? 100 : (int) n0;
+    const int n = (n0 > 100U) ? 100 : (int) n0;
     DDS_ERROR("%*.*s%s: %s\n", n, n, s, ((size_t) n < n0) ? "..." : "", msg);
 }
 
@@ -46,7 +46,7 @@ static bool expand_append (char **dst, size_t *sz, size_t *pos, char c)
         if (*sz >= MAX_SIZE) {
             return false;
         }
-        *sz = (*sz < 1024) ? 1024 : (*sz * 2);
+        *sz = (*sz < 1024U) ? 1024U : (*sz * 2U);
         *dst = ddsrt_realloc (*dst, *sz);
     }
     (*dst)[*pos] = c;

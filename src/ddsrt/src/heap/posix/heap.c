@@ -50,7 +50,7 @@ ddsrt_calloc(size_t count, size_t size)
 void *
 ddsrt_calloc_s(size_t count, size_t size)
 {
-  if (count == 0 || size == 0) {
+  if (count == 0U || size == 0U) {
     count = size = 1;
   }
   return calloc(count, size);
