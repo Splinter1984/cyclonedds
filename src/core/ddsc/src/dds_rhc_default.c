@@ -861,7 +861,7 @@ static bool add_sample (struct dds_rhc_default *rhc, struct rhc_instance *inst, 
     inst_clear_invsample_if_exists (rhc, inst, trig_qc);
     assert (inst->latest != NULL);
     s = inst->latest->next;
-    assert (trig_qc->dec_conds_sample == 0);
+    assert (trig_qc->dec_conds_sample == 0U);
     ddsi_serdata_unref (s->sample);
 
 #ifdef DDS_HAS_LIFESPAN
@@ -1212,7 +1212,7 @@ static void dds_rhc_register (struct dds_rhc_default *rhc, struct rhc_instance *
     {
       TRACE ("known");
     }
-    assert (inst->wrcount >= 2);
+    assert (inst->wrcount >= 2U);
     /* the most recent writer gets the fast path */
     /* to avoid wr_iid update when register is called for sample rejected */
     if (sample_accepted)
@@ -1260,7 +1260,7 @@ static bool rhc_unregister_delete_registration (struct dds_rhc_default *rhc, con
     TRACE ("unknown(#0)");
     return false;
   }
-  else if (inst->wrcount == 1U && inst->wr_iid_islive)
+  else if (inst->wrcount == 1 && inst->wr_iid_islive)
   {
     assert(inst->wr_iid != 0U);
     if (wr_iid != inst->wr_iid)
@@ -1287,7 +1287,7 @@ static bool rhc_unregister_delete_registration (struct dds_rhc_default *rhc, con
        afterward there will be 1 writer, it will be cached, and its
        registration record must go (invariant that with wrcount = 1
        and wr_iid != 0 the wr_iid is not in "registrations") */
-    if (inst->wrcount == 2U && inst->wr_iid_islive && inst->wr_iid != wr_iid)
+    if (inst->wrcount == 2 && inst->wr_iid_islive && inst->wr_iid != wr_iid)
     {
       TRACE (",delreg(remain)");
       (void) lwregs_delete (&rhc->registrations, inst->iid, inst->wr_iid);
@@ -1797,7 +1797,7 @@ static void dds_rhc_default_unregister_wr (struct ddsi_rhc * __restrict rhc_comm
   {
     if ((inst->wr_iid_islive && inst->wr_iid == wr_iid) || lwregs_contains (&rhc->registrations, inst->iid, wr_iid))
     {
-      assert (inst->wrcount > 0);
+      assert (inst->wrcount > 0U);
       struct trigger_info_pre pre;
       struct trigger_info_post post;
       struct trigger_info_qcond trig_qc;
@@ -2377,7 +2377,7 @@ static bool dds_rhc_default_add_readcondition (struct dds_rhc *rhc_common, dds_r
   assert ((dds_entity_kind (&cond->m_entity) == DDS_KIND_COND_READ && cond->m_query.m_filter == 0) ||
           (dds_entity_kind (&cond->m_entity) == DDS_KIND_COND_QUERY && cond->m_query.m_filter != 0));
   assert (ddsrt_atomic_ld32 (&cond->m_entity.m_status.m_trigger) == 0);
-  assert (cond->m_query.m_qcmask == 0);
+  assert (cond->m_query.m_qcmask == 0U);
 
   cond->m_qminv = qmask_from_dcpsquery (cond->m_sample_states, cond->m_view_states, cond->m_instance_states);
 
@@ -2389,7 +2389,7 @@ static bool dds_rhc_default_add_readcondition (struct dds_rhc *rhc_common, dds_r
     dds_querycond_mask_t avail_qcmask = ~(dds_querycond_mask_t)0;
     for (dds_readcond *rc = rhc->conds; rc != NULL; rc = rc->m_next)
     {
-      assert ((rc->m_query.m_filter == 0 && rc->m_query.m_qcmask == 0) || (rc->m_query.m_filter != 0 && rc->m_query.m_qcmask != 0));
+      assert ((rc->m_query.m_filter == 0 && rc->m_query.m_qcmask == 0U) || (rc->m_query.m_filter != 0 && rc->m_query.m_qcmask != 0U));
       avail_qcmask &= ~rc->m_query.m_qcmask;
     }
     if (avail_qcmask == 0U)
@@ -2761,7 +2761,7 @@ static bool rhc_check_counts_locked (struct dds_rhc_default *rhc, bool check_con
   {
     assert ((dds_entity_kind (&rciter->m_entity) == DDS_KIND_COND_READ && rciter->m_query.m_filter == 0) ||
             (dds_entity_kind (&rciter->m_entity) == DDS_KIND_COND_QUERY && rciter->m_query.m_filter != 0));
-    assert ((rciter->m_query.m_filter != 0) == (rciter->m_query.m_qcmask != 0));
+    assert ((rciter->m_query.m_filter != 0) == (rciter->m_query.m_qcmask != 0U));
     assert (!(enabled_qcmask & rciter->m_query.m_qcmask));
     enabled_qcmask |= rciter->m_query.m_qcmask;
   }
