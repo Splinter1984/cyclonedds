@@ -20,8 +20,10 @@
 #if defined(_WIN32)
 # include <malloc.h>
 #elif defined(__GNUC__) || (defined(__clang__) && __clang_major__ >= 2)
-# if !defined(__FreeBSD__)
+# if !defined(__FreeBSD__) && !defined(__OpenBSD__)
 #   include <alloca.h>
+# else
+#   include <stdlib.h>
 # endif
 #elif defined(__SUNPROC_C) || defined(__SUNPRO_CC)
 # include <alloca.h>
