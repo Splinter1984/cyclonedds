@@ -304,11 +304,11 @@ CU_Test(ddsc_sql, get_string)
     int res = 0; \
     if (token == DDS_SQL_TK_INTEGER || token == DDS_SQL_TK_FLOAT) \
     { \
-      int res = dds_sql_get_numeric(&(exp.n),&cursor,&token,token_sz); \
+      res = dds_sql_get_numeric(&(exp.n),&cursor,&token,token_sz); \
       CU_ASSERT (res == 0); \
       exp.aff = (token == DDS_SQL_TK_INTEGER)? DDS_SQL_AFFINITY_INTEGER: DDS_SQL_AFFINITY_REAL; \
     } else if (token == DDS_SQL_TK_STRING || token == DDS_SQL_TK_BLOB) { \
-      int res = dds_sql_get_string((void **)&(exp.s),&cursor,&token,token_sz); \
+      res = dds_sql_get_string((void **)&(exp.s),&cursor,&token,token_sz); \
       CU_ASSERT (res != 0); \
       exp.n.i = res; \
       exp.aff = (token == DDS_SQL_TK_BLOB)? DDS_SQL_AFFINITY_BLOB: DDS_SQL_AFFINITY_TEXT; \
@@ -350,11 +350,11 @@ CU_Test(ddsc_sql, get_string)
     int res = 0; \
     if (token == DDS_SQL_TK_INTEGER || token == DDS_SQL_TK_FLOAT) \
     { \
-      int res = dds_sql_get_numeric(&(exp.n),&cursor,&token,token_sz); \
+      res = dds_sql_get_numeric(&(exp.n),&cursor,&token,token_sz); \
       CU_ASSERT (res == 0); \
       exp.aff = (token == DDS_SQL_TK_INTEGER)? DDS_SQL_AFFINITY_INTEGER: DDS_SQL_AFFINITY_REAL; \
     } else if (token == DDS_SQL_TK_STRING || token == DDS_SQL_TK_BLOB) { \
-      int res = dds_sql_get_string((void **)&(exp.s),&cursor,&token,token_sz); \
+      res = dds_sql_get_string((void **)&(exp.s),&cursor,&token,token_sz); \
       CU_ASSERT (res != 0); \
       exp.n.i = res; \
       exp.aff = (token == DDS_SQL_TK_BLOB)? DDS_SQL_AFFINITY_BLOB: DDS_SQL_AFFINITY_TEXT; \
@@ -589,10 +589,10 @@ CU_Test(ddsc_sql, bind_parameter)
 {
   char *s = "?1";
   struct dds_sql_expr *exp = NULL;
-  dds_return_t ret = dds_sql_expr_init(&exp, DDS_SQL_EXPR_KIND_PARAMETER);
-  CU_ASSERT(ret == DDS_RETCODE_OK);
-  ret = dds_sql_expr_parse((const unsigned char *)s, &exp);
-  CU_ASSERT(ret == DDS_RETCODE_OK);
+  dds_return_t retcode = dds_sql_expr_init(&exp, DDS_SQL_EXPR_KIND_PARAMETER);
+  CU_ASSERT(retcode == DDS_RETCODE_OK);
+  retcode = dds_sql_expr_parse((const unsigned char *)s, &exp);
+  CU_ASSERT(retcode == DDS_RETCODE_OK);
   TEST_BIND_PARAMETER_NUM(s,    exp,    1U,   integer,    12345,    DDS_RETCODE_OK);
   TEST_BIND_PARAMETER_NUM(s,    exp,    0U,   integer,    12345,    DDS_RETCODE_BAD_PARAMETER);
   TEST_BIND_PARAMETER_NUM(s,    exp,    1U,   real,       10.0,     DDS_RETCODE_OK);
