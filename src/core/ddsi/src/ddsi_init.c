@@ -1694,35 +1694,42 @@ int ddsi_init (struct ddsi_domaingv *gv, struct ddsi_psmx_instance_locators *psm
     gv->xmit_conns_meta[i] = NULL;
     gv->xmit_conns_data[i] = NULL;
   }
-  const bool use_udp_receive_for_xmit =
-    gv->m_factory->m_connless &&
-    transport_selector_is_udp_like (gv->config.transport_selector);
-  dds_return_t rc;
-  for (int i = 0; i < gv->n_interfaces; i++)
+  if (gv->config.many_sockets_mode == DDSI_MSM_NO_UNICAST)
   {
-    if (use_udp_receive_for_xmit && ddsi_factory_supports (gv->m_factory, gv->interfaces[i].loc.kind))
+    assert (gv->n_interfaces == 1);
+    gv->xmit_conns_meta[0] = gv->disc_conn_uc[0];
+    gv->xmit_conns_data[0] = gv->data_conn_uc[0];
+  } else {
+    const bool use_udp_receive_for_xmit =
+      gv->m_factory->m_connless &&
+      transport_selector_is_udp_like (gv->config.transport_selector);
+    dds_return_t rc;
+    for (int i = 0; i < gv->n_interfaces; i++)
     {
-      const int j = gv->disc_conn_uc[i] ? i : 0;
-      gv->xmit_conns_meta[i] = gv->disc_conn_uc[j];
-      gv->xmit_conns_data[i] = gv->data_conn_uc[j];
-      continue;
-    }
+      if (use_udp_receive_for_xmit && ddsi_factory_supports (gv->m_factory, gv->interfaces[i].loc.kind))
+      {
+        const int j = gv->disc_conn_uc[i] ? i : 0;
+        gv->xmit_conns_meta[i] = gv->disc_conn_uc[j];
+        gv->xmit_conns_data[i] = gv->data_conn_uc[j];
+        continue;
+      }
 
-    const struct ddsi_tran_qos qos = {
-      .m_purpose = (gv->interfaces[i].allow_multicast ? DDSI_TRAN_QOS_XMIT_MC : DDSI_TRAN_QOS_XMIT_UC),
-      .m_diffserv = 0,
-      .m_interface = &gv->interfaces[i],
-      .m_bind_to_any = false
-    };
-    // FIXME: looking up the factory here is a hack to support PSMX in addition to (e.g.) UDP
-    struct ddsi_tran_factory * fact = ddsi_factory_find_supported_kind (gv, gv->interfaces[i].loc.kind);
-    assert (fact != NULL);
-    struct ddsi_tran_conn *xmit_conn;
-    rc = ddsi_factory_create_conn (&xmit_conn, fact, 0, &qos);
-    if (rc != DDS_RETCODE_OK)
-      goto err_mc_conn;
-    gv->xmit_conns_meta[i] = xmit_conn;
-    gv->xmit_conns_data[i] = xmit_conn;
+      const struct ddsi_tran_qos qos = {
+        .m_purpose = (gv->interfaces[i].allow_multicast ? DDSI_TRAN_QOS_XMIT_MC : DDSI_TRAN_QOS_XMIT_UC),
+        .m_diffserv = 0,
+        .m_interface = &gv->interfaces[i],
+        .m_bind_to_any = false
+      };
+      // FIXME: looking up the factory here is a hack to support PSMX in addition to (e.g.) UDP
+      struct ddsi_tran_factory * fact = ddsi_factory_find_supported_kind (gv, gv->interfaces[i].loc.kind);
+      assert (fact != NULL);
+      struct ddsi_tran_conn *xmit_conn;
+      rc = ddsi_factory_create_conn (&xmit_conn, fact, 0, &qos);
+      if (rc != DDS_RETCODE_OK)
+        goto err_mc_conn;
+      gv->xmit_conns_meta[i] = xmit_conn;
+      gv->xmit_conns_data[i] = xmit_conn;
+    }
   }
   for (int i = 0; i < gv->n_interfaces; i++)
   {
